@@ -1,0 +1,81 @@
+import React from 'react';
+import {
+  View, Text, StyleSheet, TouchableOpacity,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Player } from '../hooks/usePlayer';
+
+interface Props {
+  player: Player;
+  onPlayPvP: () => void;
+  onPlaySolo: () => void;
+}
+
+export function HomeScreen({ player, onPlayPvP, onPlaySolo }: Props) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>2048</Text>
+        <Text style={styles.subtitle}>BATTLE</Text>
+      </View>
+
+      <View style={styles.playerInfo}>
+        <Text style={styles.playerName}>👤 {player.nickname}</Text>
+        <Text style={styles.playerElo}>⚡ {player.elo} ELO</Text>
+        <Text style={styles.playerStats}>
+          🎮 {player.total_games} games · 🏆 {player.total_wins} wins
+        </Text>
+      </View>
+
+      <View style={styles.buttons}>
+        <TouchableOpacity onPress={onPlayPvP} style={styles.pvpBtn}>
+          <Text style={styles.pvpBtnTitle}>⚔️ PVP BATTLE</Text>
+          <Text style={styles.pvpBtnSub}>Play against real players</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={onPlaySolo} style={styles.soloBtn}>
+          <Text style={styles.soloBtnTitle}>🎲 SOLO</Text>
+          <Text style={styles.soloBtnSub}>Practice mode</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Same board · Pure skill · No luck</Text>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#faf8ef' },
+  header: { alignItems: 'center', paddingTop: 40, paddingBottom: 20 },
+  title: { fontSize: 64, fontWeight: '900', color: '#776e65', letterSpacing: -2 },
+  subtitle: { fontSize: 24, fontWeight: '900', color: '#f65e3b', letterSpacing: 8, marginTop: -8 },
+  playerInfo: {
+    backgroundColor: '#fff', marginHorizontal: 20, borderRadius: 16,
+    padding: 20, alignItems: 'center', marginBottom: 32,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08, shadowRadius: 8, elevation: 4,
+  },
+  playerName: { fontSize: 20, fontWeight: '800', color: '#776e65', marginBottom: 4 },
+  playerElo: { fontSize: 16, color: '#f65e3b', fontWeight: '700', marginBottom: 4 },
+  playerStats: { fontSize: 13, color: '#bbada0' },
+  buttons: { paddingHorizontal: 20, gap: 12 },
+  pvpBtn: {
+    backgroundColor: '#f65e3b', borderRadius: 16,
+    paddingVertical: 20, paddingHorizontal: 24,
+    shadowColor: '#f65e3b', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 12, elevation: 8,
+  },
+  pvpBtnTitle: { fontSize: 22, fontWeight: '900', color: '#fff', letterSpacing: 2, marginBottom: 4 },
+  pvpBtnSub: { fontSize: 14, color: 'rgba(255,255,255,0.8)' },
+  soloBtn: {
+    backgroundColor: '#fff', borderRadius: 16,
+    paddingVertical: 18, paddingHorizontal: 24,
+    borderWidth: 2, borderColor: '#e0d6cc',
+  },
+  soloBtnTitle: { fontSize: 20, fontWeight: '900', color: '#776e65', letterSpacing: 2, marginBottom: 4 },
+  soloBtnSub: { fontSize: 14, color: '#bbada0' },
+  footer: { position: 'absolute', bottom: 32, left: 0, right: 0, alignItems: 'center' },
+  footerText: { fontSize: 13, color: '#bbada0', fontStyle: 'italic' },
+});
