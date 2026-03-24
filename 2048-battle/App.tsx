@@ -4,13 +4,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { MatchmakingScreen } from './src/screens/MatchmakingScreen';
-
-import { GameScreen } from './src/screens/GameScreen';
 import { PvPGameScreen } from './src/screens/PvPGameScreen';
+import { BotGameScreen } from './src/screens/BotGameScreen';
+import { GameScreen } from './src/screens/GameScreen';
 import { MatchResultScreen } from './src/screens/MatchResultScreen';
 import { usePlayer } from './src/hooks/usePlayer';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'solo' | 'result';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result';
 
 interface MatchData {
   matchId: string;
@@ -31,6 +31,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [resultData, setResultData] = useState<ResultData | null>(null);
+  const [botDifficulty, setBotDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
 
   if (!player) {
     return (
@@ -49,6 +50,7 @@ export default function App() {
         <HomeScreen
           player={player}
           onPlayPvP={() => setScreen('matchmaking')}
+          onPlayBot={(diff) => { setBotDifficulty(diff); setScreen('bot'); }}
           onPlaySolo={() => setScreen('solo')}
         />
       )}
@@ -72,12 +74,25 @@ export default function App() {
           isPlayer1={matchData.isPlayer1}
           opponentNickname={matchData.opponentNickname}
           onFinish={(won: boolean, myScore: number, opponentScore: number) => {
+            setResultData({ won, myScore, opponentScore, opponentNickname: matchData.opponentNickname });
+            setScreen('result');
+          }}
+        />
+      )}
+
+      {screen === 'bot' && (
+        <BotGameScreen
+          player={player}
+          difficulty={botDifficulty}
+          onFinish={(won, myScore, botScore) => {
             setResultData({
-              won, myScore, opponentScore,
-              opponentNickname: matchData.opponentNickname,
+              won, myScore, opponentScore: botScore,
+              opponentNickname: botDifficulty === 'easy' ? '🤖 EasyBot' :
+                botDifficulty === 'medium' ? '🤖 MediumBot' : '🤖 HardBot',
             });
             setScreen('result');
           }}
+          onBack={() => setScreen('home')}
         />
       )}
 
