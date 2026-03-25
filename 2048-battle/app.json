@@ -20,13 +20,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.battle2048.app"
+      "package": "com.battle2048.app",
+      "googleMobileAdsAppId": "ca-app-pub-7052877159805288~1929926938"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      "react-native-google-mobile-ads"
     ],
     "extra": {
       "eas": {

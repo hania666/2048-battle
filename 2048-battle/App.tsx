@@ -8,9 +8,11 @@ import { PvPGameScreen } from './src/screens/PvPGameScreen';
 import { BotGameScreen } from './src/screens/BotGameScreen';
 import { GameScreen } from './src/screens/GameScreen';
 import { MatchResultScreen } from './src/screens/MatchResultScreen';
+import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { usePlayer } from './src/hooks/usePlayer';
+import { useEnergy } from './src/hooks/useEnergy';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard';
 
 interface MatchData {
   matchId: string;
@@ -28,6 +30,7 @@ interface ResultData {
 
 export default function App() {
   const { player, loading, createPlayer } = usePlayer();
+  const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
   const [screen, setScreen] = useState<Screen>('home');
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [resultData, setResultData] = useState<ResultData | null>(null);
@@ -49,8 +52,25 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           player={player}
-          onPlayPvP={() => setScreen('matchmaking')}
-          onPlayBot={(diff) => { setBotDifficulty(diff); setScreen('bot'); }}
+          energy={energy}
+          maxEnergy={maxEnergy}
+          timeUntilRegen={getTimeUntilRegen()}
+          onWatchAd={() => addEnergy(2)}
+          onBuy={(product) => {
+            if (product === 'energy_10') addEnergy(10);
+            else if (product === 'energy_25') addEnergy(25);
+            else if (product === 'energy_unlimited') addEnergy(999);
+          }}
+          adLoaded={false}
+          onPlayPvP={async () => {
+            const ok = await spendEnergy(1);
+            if (ok) setScreen('matchmaking');
+          }}
+          onLeaderboard={() => setScreen('leaderboard')}
+          onPlayBot={async (diff) => {
+            const ok = await spendEnergy(1);
+            if (ok) { setBotDifficulty(diff); setScreen('bot'); }
+          }}
           onPlaySolo={() => setScreen('solo')}
         />
       )}
@@ -99,6 +119,13 @@ export default function App() {
       {screen === 'solo' && (
         <GameScreen
           player={player}
+          onBack={() => setScreen('home')}
+        />
+      )}
+
+      {screen === 'leaderboard' && (
+        <LeaderboardScreen
+          currentPlayerId={player.id}
           onBack={() => setScreen('home')}
         />
       )}

@@ -4,15 +4,25 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Player } from '../hooks/usePlayer';
+import { EnergyBar } from '../components/EnergyBar';
+import { ShopModal } from '../components/ShopModal';
 
 interface Props {
   player: Player;
+  energy: number;
+  maxEnergy: number;
+  timeUntilRegen: string | null;
+  onWatchAd?: () => void;
+  onBuy: (product: string) => void;
+  adLoaded?: boolean;
   onPlayPvP: () => void;
   onPlayBot: (difficulty: 'easy' | 'medium' | 'hard') => void;
   onPlaySolo: () => void;
+  onLeaderboard: () => void;
 }
 
-export function HomeScreen({ player, onPlayPvP, onPlayBot, onPlaySolo }: Props) {
+export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard }: Props) {
+  const [showShop, setShowShop] = React.useState(false);
   const [showBotModal, setShowBotModal] = useState(false);
 
   return (
@@ -30,6 +40,23 @@ export function HomeScreen({ player, onPlayPvP, onPlayBot, onPlaySolo }: Props) 
         </Text>
       </View>
 
+      <ShopModal
+        visible={showShop}
+        energy={energy}
+        maxEnergy={maxEnergy}
+        onClose={() => setShowShop(false)}
+        onWatchAd={() => { onWatchAd?.(); setShowShop(false); }}
+        onBuy={onBuy}
+        adLoaded={adLoaded || false}
+      />
+
+      <EnergyBar
+        energy={energy}
+        maxEnergy={maxEnergy}
+        timeUntilRegen={timeUntilRegen}
+        onWatchAd={() => setShowShop(true)}
+      />
+
       <View style={styles.buttons}>
         <TouchableOpacity onPress={onPlayPvP} style={styles.pvpBtn}>
           <Text style={styles.pvpBtnTitle}>⚔️ PVP BATTLE</Text>
@@ -39,6 +66,11 @@ export function HomeScreen({ player, onPlayPvP, onPlayBot, onPlaySolo }: Props) 
         <TouchableOpacity onPress={() => setShowBotModal(true)} style={styles.botBtn}>
           <Text style={styles.botBtnTitle}>🤖 VS BOT</Text>
           <Text style={styles.botBtnSub}>Practice against AI</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={onLeaderboard} style={styles.leaderboardBtn}>
+          <Text style={styles.leaderboardBtnTitle}>🏆 LEADERBOARD</Text>
+          <Text style={styles.leaderboardBtnSub}>Top players worldwide</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onPlaySolo} style={styles.soloBtn}>
@@ -129,6 +161,13 @@ const styles = StyleSheet.create({
   },
   soloBtnTitle: { fontSize: 18, fontWeight: '900', color: '#776e65', letterSpacing: 2, marginBottom: 2 },
   soloBtnSub: { fontSize: 13, color: '#bbada0' },
+  leaderboardBtn: {
+    backgroundColor: '#fff', borderRadius: 16,
+    paddingVertical: 14, paddingHorizontal: 24,
+    borderWidth: 2, borderColor: '#edcf72',
+  },
+  leaderboardBtnTitle: { fontSize: 18, fontWeight: '900', color: '#776e65', letterSpacing: 2, marginBottom: 2 },
+  leaderboardBtnSub: { fontSize: 13, color: '#bbada0' },
   footer: { position: 'absolute', bottom: 24, left: 0, right: 0, alignItems: 'center' },
   footerText: { fontSize: 13, color: '#bbada0', fontStyle: 'italic' },
   modalOverlay: {
