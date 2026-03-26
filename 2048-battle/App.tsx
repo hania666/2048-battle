@@ -9,12 +9,15 @@ import { BotGameScreen } from './src/screens/BotGameScreen';
 import { GameScreen } from './src/screens/GameScreen';
 import { MatchResultScreen } from './src/screens/MatchResultScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
 import { usePlayer } from './src/hooks/usePlayer';
+import { getEloDiff } from './src/game/elo';
+import { supabase } from './src/utils/supabase';
 import { useEnergy } from './src/hooks/useEnergy';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings';
 
 interface MatchData {
   matchId: string;
@@ -28,6 +31,7 @@ interface ResultData {
   myScore: number;
   opponentScore: number;
   opponentNickname: string;
+  eloDiff: number;
 }
 
 export default function App() {
@@ -89,15 +93,10 @@ export default function App() {
             else if (product === 'energy_unlimited') addEnergy(999);
           }}
           adLoaded={false}
-          onPlayPvP={async () => {
-            const ok = await spendEnergy(1);
-            if (ok) setScreen('matchmaking');
-          }}
+          onSettings={() => setScreen('settings')}
+          onPlayPvP={() => setScreen('matchmaking')}
           onLeaderboard={() => setScreen('leaderboard')}
-          onPlayBot={async (diff) => {
-            const ok = await spendEnergy(1);
-            if (ok) { setBotDifficulty(diff); setScreen('bot'); }
-          }}
+          onPlayBot={(diff) => { setBotDifficulty(diff); setScreen('bot'); }}
           onPlaySolo={() => setScreen('solo')}
         />
       )}
@@ -110,6 +109,7 @@ export default function App() {
             setScreen('pvp');
           }}
           onCancel={() => setScreen('home')}
+          onSpendEnergy={() => spendEnergy(1)}
         />
       )}
 
@@ -120,8 +120,17 @@ export default function App() {
           seed={matchData.seed}
           isPlayer1={matchData.isPlayer1}
           opponentNickname={matchData.opponentNickname}
-          onFinish={(won: boolean, myScore: number, opponentScore: number) => {
-            setResultData({ won, myScore, opponentScore, opponentNickname: matchData.opponentNickname });
+          onFinish={async (won: boolean, myScore: number, opponentScore: number) => {
+            const eloDiff = getEloDiff(player.elo, 1000, won);
+            const newElo = player.elo + eloDiff;
+            try {
+              await supabase.from('players').update({
+                elo: newElo,
+                total_games: player.total_games + 1,
+                total_wins: player.total_wins + (won ? 1 : 0),
+              }).eq('id', player.id);
+            } catch (e) { console.warn('ELO update error:', e); }
+            setResultData({ won, myScore, opponentScore, opponentNickname: matchData.opponentNickname, eloDiff });
             setScreen('result');
           }}
         />
@@ -136,6 +145,7 @@ export default function App() {
               won, myScore, opponentScore: botScore,
               opponentNickname: botDifficulty === 'easy' ? '🤖 EasyBot' :
                 botDifficulty === 'medium' ? '🤖 MediumBot' : '🤖 HardBot',
+              eloDiff: 0,
             });
             setScreen('result');
           }}
@@ -148,6 +158,10 @@ export default function App() {
           player={player}
           onBack={() => setScreen('home')}
         />
+      )}
+
+      {screen === 'settings' && (
+        <SettingsScreen onBack={() => setScreen('home')} />
       )}
 
       {screen === 'leaderboard' && (
@@ -164,6 +178,7 @@ export default function App() {
           opponentScore={resultData.opponentScore}
           myNickname={player.nickname}
           opponentNickname={resultData.opponentNickname}
+          eloDiff={resultData.eloDiff}
           onPlayAgain={() => setScreen('matchmaking')}
           onHome={() => setScreen('home')}
         />

@@ -5,9 +5,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Player } from '../hooks/usePlayer';
 import { EnergyBar } from '../components/EnergyBar';
+import { useLanguage } from '../i18n/useLanguage';
+import { LanguageModal } from '../components/LanguageModal';
 import { ShopModal } from '../components/ShopModal';
 
 interface Props {
+  onSettings: () => void;
   player: Player;
   energy: number;
   maxEnergy: number;
@@ -21,13 +24,21 @@ interface Props {
   onLeaderboard: () => void;
 }
 
-export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard }: Props) {
+export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard, onSettings }: Props) {
   const [showShop, setShowShop] = React.useState(false);
+  const [showLang, setShowLang] = React.useState(false);
+  const { t } = useLanguage();
   const [showBotModal, setShowBotModal] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={onSettings} style={styles.settingsBtn}>
+          <Text style={styles.langBtnText}>⚙️</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowLang(true)} style={styles.langBtn}>
+          <Text style={styles.langBtnText}>🌍</Text>
+        </TouchableOpacity>
         <Text style={styles.title}>2048</Text>
         <Text style={styles.subtitle}>BATTLE</Text>
       </View>
@@ -36,10 +47,11 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
         <Text style={styles.playerName}>👤 {player.nickname}</Text>
         <Text style={styles.playerElo}>⚡ {player.elo} ELO</Text>
         <Text style={styles.playerStats}>
-          🎮 {player.total_games} games · 🏆 {player.total_wins} wins
+          🎮 {player.total_games} {t('games')} · 🏆 {player.total_wins} {t('wins')}
         </Text>
       </View>
 
+      <LanguageModal visible={showLang} onClose={() => setShowLang(false)} />
       <ShopModal
         visible={showShop}
         energy={energy}
@@ -59,64 +71,64 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
 
       <View style={styles.buttons}>
         <TouchableOpacity onPress={onPlayPvP} style={styles.pvpBtn}>
-          <Text style={styles.pvpBtnTitle}>⚔️ PVP BATTLE</Text>
-          <Text style={styles.pvpBtnSub}>Play against real players</Text>
+          <Text style={styles.pvpBtnTitle}>{t('pvpBattle')}</Text>
+          <Text style={styles.pvpBtnSub}>{t('pvpSub')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setShowBotModal(true)} style={styles.botBtn}>
-          <Text style={styles.botBtnTitle}>🤖 VS BOT</Text>
-          <Text style={styles.botBtnSub}>Practice against AI</Text>
+          <Text style={styles.botBtnTitle}>{t('vsBot')}</Text>
+          <Text style={styles.botBtnSub}>{t('vsBotSub')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onLeaderboard} style={styles.leaderboardBtn}>
-          <Text style={styles.leaderboardBtnTitle}>🏆 LEADERBOARD</Text>
-          <Text style={styles.leaderboardBtnSub}>Top players worldwide</Text>
+          <Text style={styles.leaderboardBtnTitle}>{t('leaderboard')}</Text>
+          <Text style={styles.leaderboardBtnSub}>{t('leaderboardSub')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onPlaySolo} style={styles.soloBtn}>
-          <Text style={styles.soloBtnTitle}>🎲 SOLO</Text>
-          <Text style={styles.soloBtnSub}>Practice mode</Text>
+          <Text style={styles.soloBtnTitle}>{t('solo')}</Text>
+          <Text style={styles.soloBtnSub}>{t('soloSub')}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Same board · Pure skill · No luck</Text>
+        <Text style={styles.footerText}>{t('tagline')}</Text>
       </View>
 
       <Modal visible={showBotModal} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>SELECT DIFFICULTY</Text>
+            <Text style={styles.modalTitle}>{t('selectDifficulty')}</Text>
 
             <TouchableOpacity
               onPress={() => { setShowBotModal(false); onPlayBot('easy'); }}
               style={[styles.diffBtn, styles.easyBtn]}
             >
-              <Text style={styles.diffBtnTitle}>🟢 EASY</Text>
-              <Text style={styles.diffBtnSub}>Slow moves, random strategy</Text>
+              <Text style={styles.diffBtnTitle}>{t('easy')}</Text>
+              <Text style={styles.diffBtnSub}>{t('easySub')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => { setShowBotModal(false); onPlayBot('medium'); }}
               style={[styles.diffBtn, styles.mediumBtn]}
             >
-              <Text style={styles.diffBtnTitle}>🟡 MEDIUM</Text>
-              <Text style={styles.diffBtnSub}>Balanced speed and strategy</Text>
+              <Text style={styles.diffBtnTitle}>{t('medium')}</Text>
+              <Text style={styles.diffBtnSub}>{t('mediumSub')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => { setShowBotModal(false); onPlayBot('hard'); }}
               style={[styles.diffBtn, styles.hardBtn]}
             >
-              <Text style={styles.diffBtnTitle}>🔴 HARD</Text>
-              <Text style={styles.diffBtnSub}>Fast moves, smart strategy</Text>
+              <Text style={styles.diffBtnTitle}>{t('hard')}</Text>
+              <Text style={styles.diffBtnSub}>{t('hardSub')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => setShowBotModal(false)}
               style={styles.cancelBtn}
             >
-              <Text style={styles.cancelBtnText}>CANCEL</Text>
+              <Text style={styles.cancelBtnText}>{t('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -127,7 +139,22 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#faf8ef' },
-  header: { alignItems: 'center', paddingTop: 32, paddingBottom: 16 },
+  header: { alignItems: 'center', paddingTop: 32, paddingBottom: 16, position: 'relative' },
+  settingsBtn: {
+    position: 'absolute', top: 32, left: 20,
+    width: 40, height: 40, borderRadius: 12,
+    backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08, shadowRadius: 4, elevation: 3,
+  },
+  langBtn: {
+    position: 'absolute', top: 32, right: 20,
+    width: 40, height: 40, borderRadius: 12,
+    backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08, shadowRadius: 4, elevation: 3,
+  },
+  langBtnText: { fontSize: 20 },
   title: { fontSize: 64, fontWeight: '900', color: '#776e65', letterSpacing: -2 },
   subtitle: { fontSize: 24, fontWeight: '900', color: '#f65e3b', letterSpacing: 8, marginTop: -8 },
   playerInfo: {

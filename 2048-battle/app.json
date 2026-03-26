@@ -28,7 +28,9 @@
     },
     "plugins": [
       "expo-asset",
-      "react-native-google-mobile-ads"
+      "react-native-google-mobile-ads",
+      "expo-web-browser",
+      "expo-localization"
     ],
     "extra": {
       "eas": {

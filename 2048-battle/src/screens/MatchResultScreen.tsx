@@ -10,6 +10,7 @@ interface Props {
   opponentScore: number;
   myNickname: string;
   opponentNickname: string;
+  eloDiff?: number;
   onPlayAgain: () => void;
   onHome: () => void;
 }
@@ -17,6 +18,7 @@ interface Props {
 export function MatchResultScreen({
   won, myScore, opponentScore,
   myNickname, opponentNickname,
+  eloDiff,
   onPlayAgain, onHome,
 }: Props) {
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -51,6 +53,14 @@ export function MatchResultScreen({
             <Text style={styles.scoreCardLabel}>THEIR SCORE</Text>
           </View>
         </View>
+
+        {eloDiff !== undefined && (
+          <View style={styles.eloChange}>
+            <Text style={[styles.eloChangeText, eloDiff >= 0 ? styles.eloUp : styles.eloDown]}>
+              {eloDiff >= 0 ? '+' : ''}{eloDiff} ELO
+            </Text>
+          </View>
+        )}
 
         <View style={styles.diff}>
           <Text style={styles.diffText}>
@@ -97,6 +107,10 @@ const styles = StyleSheet.create({
   vsText: { fontSize: 20, fontWeight: '900', color: '#bbada0' },
   diff: { marginBottom: 40 },
   diffText: { fontSize: 16, color: '#776e65', fontWeight: '600', textAlign: 'center' },
+  eloChange: { marginBottom: 16, alignItems: 'center' },
+  eloChangeText: { fontSize: 28, fontWeight: '900' },
+  eloUp: { color: '#6db56d' },
+  eloDown: { color: '#e05454' },
   buttons: { width: '100%', gap: 12 },
   playAgainBtn: {
     backgroundColor: '#f65e3b', borderRadius: 12,

@@ -4,6 +4,7 @@ import {
   TouchableOpacity, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLanguage } from '../i18n/useLanguage';
 
 interface Props {
   onStart: (nickname: string) => void;
@@ -12,6 +13,7 @@ interface Props {
 
 export function OnboardingScreen({ onStart, loading }: Props) {
   const [nickname, setNickname] = useState('');
+  const { t } = useLanguage();
 
   const handleStart = () => {
     const name = nickname.trim() || 'Player' + Math.floor(Math.random() * 9999);
@@ -29,12 +31,12 @@ export function OnboardingScreen({ onStart, loading }: Props) {
         <Text style={styles.desc}>Challenge players worldwide in real-time 2048 battles</Text>
 
         <View style={styles.form}>
-          <Text style={styles.label}>YOUR NICKNAME</Text>
+          <Text style={styles.label}>{t('yourNickname')}</Text>
           <TextInput
             style={styles.input}
             value={nickname}
             onChangeText={setNickname}
-            placeholder="Enter nickname..."
+            placeholder={t('enterNickname')}
             placeholderTextColor="#bbada0"
             maxLength={16}
             autoCapitalize="none"
@@ -46,16 +48,16 @@ export function OnboardingScreen({ onStart, loading }: Props) {
             style={[styles.startBtn, loading && styles.startBtnDisabled]}
           >
             <Text style={styles.startBtnText}>
-              {loading ? 'LOADING...' : 'START PLAYING'}
+              {loading ? t('loading') : t('startPlaying')}
             </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.features}>
-          <Text style={styles.feature}>🎮 Real-time PvP matches</Text>
-          <Text style={styles.feature}>🏆 Global leaderboard</Text>
-          <Text style={styles.feature}>⚡ ELO ranking system</Text>
-          <Text style={styles.feature}>🎯 Skill-based gameplay</Text>
+          <Text style={styles.feature}>{t('feature1')}</Text>
+          <Text style={styles.feature}>{t('feature2')}</Text>
+          <Text style={styles.feature}>{t('feature3')}</Text>
+          <Text style={styles.feature}>{t('feature4')}</Text>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

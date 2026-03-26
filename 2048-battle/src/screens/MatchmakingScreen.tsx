@@ -11,9 +11,10 @@ interface Props {
   player: Player;
   onMatchFound: (matchId: string, seed: number, isPlayer1: boolean) => void;
   onCancel: () => void;
+  onSpendEnergy: () => Promise<boolean>;
 }
 
-export function MatchmakingScreen({ player, onMatchFound, onCancel }: Props) {
+export function MatchmakingScreen({ player, onMatchFound, onCancel, onSpendEnergy }: Props) {
   const { status, match, opponentNickname, findMatch, cancelSearch } = useMatchmaking(player);
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -24,8 +25,14 @@ export function MatchmakingScreen({ player, onMatchFound, onCancel }: Props) {
   useEffect(() => {
     if (status === 'found' && match) {
       const isPlayer1 = match.player1_id === player.id;
-      setTimeout(() => {
-        onMatchFound(match.id, match.seed, isPlayer1);
+      setTimeout(async () => {
+        const ok = await onSpendEnergy();
+        if (ok) {
+          onMatchFound(match.id, match.seed, isPlayer1);
+        } else {
+          await cancelSearch();
+          onCancel();
+        }
       }, 1500);
     }
   }, [status, match]);
