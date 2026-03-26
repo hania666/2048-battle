@@ -11,6 +11,8 @@ import { MatchResultScreen } from './src/screens/MatchResultScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { usePlayer } from './src/hooks/usePlayer';
 import { useEnergy } from './src/hooks/useEnergy';
+import { useDailyBonus } from './src/hooks/useDailyBonus';
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard';
 
@@ -31,6 +33,18 @@ interface ResultData {
 export default function App() {
   const { player, loading, createPlayer } = usePlayer();
   const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
+  const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
+  const [showBonus, setShowBonus] = useState(false);
+
+  React.useEffect(() => {
+    if (canClaim) setShowBonus(true);
+  }, [canClaim]);
+
+  const handleClaimBonus = async () => {
+    const bonus = await claimBonus();
+    if (bonus > 0) await addEnergy(bonus);
+    setShowBonus(false);
+  };
   const [screen, setScreen] = useState<Screen>('home');
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [resultData, setResultData] = useState<ResultData | null>(null);
@@ -47,6 +61,19 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
+      <Modal visible={showBonus} transparent animationType="fade">
+        <View style={bonusStyles.overlay}>
+          <View style={bonusStyles.card}>
+            <Text style={bonusStyles.emoji}>🎁</Text>
+            <Text style={bonusStyles.title}>DAILY BONUS!</Text>
+            <Text style={bonusStyles.streak}>Day {streak + 1} streak 🔥</Text>
+            <Text style={bonusStyles.reward}>+{nextBonus} ⚡ Energy</Text>
+            <TouchableOpacity onPress={handleClaimBonus} style={bonusStyles.btn}>
+              <Text style={bonusStyles.btnText}>CLAIM!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <StatusBar style="dark" />
 
       {screen === 'home' && (
@@ -144,3 +171,25 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+const bonusStyles = StyleSheet.create({
+  overlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  card: {
+    backgroundColor: '#faf8ef', borderRadius: 24,
+    padding: 32, alignItems: 'center', width: '80%',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2, shadowRadius: 16, elevation: 12,
+  },
+  emoji: { fontSize: 56, marginBottom: 12 },
+  title: { fontSize: 28, fontWeight: '900', color: '#776e65', letterSpacing: 2, marginBottom: 8 },
+  streak: { fontSize: 16, color: '#f65e3b', fontWeight: '700', marginBottom: 16 },
+  reward: { fontSize: 36, fontWeight: '900', color: '#776e65', marginBottom: 24 },
+  btn: {
+    backgroundColor: '#f65e3b', borderRadius: 14,
+    paddingHorizontal: 40, paddingVertical: 16,
+  },
+  btnText: { color: '#fff', fontSize: 18, fontWeight: '900', letterSpacing: 2 },
+});
