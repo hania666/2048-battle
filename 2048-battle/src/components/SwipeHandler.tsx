@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import { PanResponder, View, StyleSheet } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Direction } from '../game/logic';
 
 interface Props {
@@ -21,12 +23,17 @@ export function SwipeHandler({ onSwipe, children }: Props) {
         startX.current = e.nativeEvent.pageX;
         startY.current = e.nativeEvent.pageY;
       },
-      onPanResponderRelease: (e) => {
+      onPanResponderRelease: async (e) => {
         const dx = e.nativeEvent.pageX - startX.current;
         const dy = e.nativeEvent.pageY - startY.current;
         const absDx = Math.abs(dx);
         const absDy = Math.abs(dy);
         if (Math.max(absDx, absDy) < SWIPE_THRESHOLD) return;
+        try {
+          const saved = await AsyncStorage.getItem('settings_2048');
+          const vibration = saved ? JSON.parse(saved).vibration : true;
+          if (vibration) await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        } catch (e) {}
         if (absDx > absDy) {
           onSwipe(dx > 0 ? 'right' : 'left');
         } else {
