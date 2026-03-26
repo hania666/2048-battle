@@ -1,25 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text } from 'react-native';
+import { theme } from '../utils/theme';
 
 interface Props {
   value: number;
   size: number;
 }
-
-const TILE_COLORS: Record<number, { bg: string; text: string }> = {
-  0:    { bg: '#cdc1b4', text: '#776e65' },
-  2:    { bg: '#eee4da', text: '#776e65' },
-  4:    { bg: '#ede0c8', text: '#776e65' },
-  8:    { bg: '#f2b179', text: '#f9f6f2' },
-  16:   { bg: '#f59563', text: '#f9f6f2' },
-  32:   { bg: '#f67c5f', text: '#f9f6f2' },
-  64:   { bg: '#f65e3b', text: '#f9f6f2' },
-  128:  { bg: '#edcf72', text: '#f9f6f2' },
-  256:  { bg: '#edcc61', text: '#f9f6f2' },
-  512:  { bg: '#edc850', text: '#f9f6f2' },
-  1024: { bg: '#9945FF', text: '#f9f6f2' },
-  2048: { bg: '#14F195', text: '#f9f6f2' },
-};
 
 function getFontSize(value: number, size: number): number {
   if (value >= 1024) return size * 0.28;
@@ -29,36 +15,46 @@ function getFontSize(value: number, size: number): number {
 }
 
 export function Tile({ value, size }: Props) {
-  const scaleAnim = useRef(new Animated.Value(value ? 0.8 : 1)).current;
+  const scaleAnim = useRef(new Animated.Value(value ? 0.7 : 1)).current;
 
   useEffect(() => {
     if (value) {
       Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 4,
-        tension: 200,
-        useNativeDriver: true,
+        toValue: 1, friction: 4, tension: 300, useNativeDriver: true,
       }).start();
     }
   }, [value]);
 
-  const colors = TILE_COLORS[value] || { bg: '#3c3a32', text: '#f9f6f2' };
+  const colors = (theme.tiles as any)[value] || { bg: '#2D1B69', text: '#C4B5FD' };
+  const isSpecial = value >= 128;
 
   return (
-    <Animated.View
-      style={[
-        styles.tile,
-        {
-          width: size,
-          height: size,
-          borderRadius: size * 0.1,
-          backgroundColor: colors.bg,
-          transform: [{ scale: scaleAnim }],
-        },
-      ]}
-    >
+    <Animated.View style={[
+      styles.tile,
+      {
+        width: size, height: size, borderRadius: size * 0.12,
+        backgroundColor: colors.bg,
+        transform: [{ scale: scaleAnim }],
+        borderWidth: isSpecial ? 1 : 0,
+        borderColor: isSpecial ? colors.text + '40' : 'transparent',
+        shadowColor: isSpecial ? colors.text : 'transparent',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: isSpecial ? 0.6 : 0,
+        shadowRadius: isSpecial ? 8 : 0,
+        elevation: isSpecial ? 8 : 0,
+      },
+    ]}>
       {value > 0 && (
-        <Text style={[styles.text, { color: colors.text, fontSize: getFontSize(value, size) }]}>
+        <Text style={[
+          styles.text,
+          {
+            color: colors.text,
+            fontSize: getFontSize(value, size),
+            textShadowColor: colors.text + '80',
+            textShadowOffset: { width: 0, height: 0 },
+            textShadowRadius: isSpecial ? 8 : 0,
+          },
+        ]}>
           {value}
         </Text>
       )}
@@ -67,12 +63,6 @@ export function Tile({ value, size }: Props) {
 }
 
 const styles = StyleSheet.create({
-  tile: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 4,
-  },
-  text: {
-    fontWeight: '900',
-  },
+  tile: { alignItems: 'center', justifyContent: 'center', margin: 4 },
+  text: { fontWeight: '900' },
 });
