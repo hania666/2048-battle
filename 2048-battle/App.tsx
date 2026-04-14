@@ -15,6 +15,8 @@ import { usePlayer } from './src/hooks/usePlayer';
 import { getEloDiff } from './src/game/elo';
 import { supabase } from './src/utils/supabase';
 import { useEnergy } from './src/hooks/useEnergy';
+import { useNoAds } from './src/hooks/useNoAds';
+import { useRewardedAd } from './src/hooks/useRewardedAd';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { soundManager } from './src/utils/soundManager';
 import { useSettings } from './src/hooks/useSettings';
@@ -42,6 +44,8 @@ export default function App() {
   const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
   const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
   const { settings } = useSettings();
+  const { noAds, purchaseNoAds } = useNoAds();
+  const { loaded: adLoaded, showAd } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
     const initSound = async () => {
@@ -108,13 +112,15 @@ export default function App() {
           energy={energy}
           maxEnergy={maxEnergy}
           timeUntilRegen={getTimeUntilRegen()}
-          onWatchAd={() => addEnergy(2)}
+          onWatchAd={adLoaded && !noAds ? showAd : undefined}
           onBuy={(product) => {
             if (product === 'energy_10') addEnergy(10);
             else if (product === 'energy_25') addEnergy(25);
             else if (product === 'energy_unlimited') addEnergy(999);
           }}
-          adLoaded={false}
+          noAds={noAds}
+          onRemoveAds={purchaseNoAds}
+          adLoaded={adLoaded}
           onSettings={() => setScreen('settings')}
           onPlayPvP={() => setScreen('matchmaking')}
           onLeaderboard={() => setScreen('leaderboard')}

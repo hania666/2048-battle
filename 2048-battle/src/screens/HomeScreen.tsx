@@ -16,6 +16,8 @@ interface Props {
   onWatchAd?: () => void;
   onBuy: (product: string) => void;
   adLoaded?: boolean;
+  noAds?: boolean;
+  onRemoveAds?: () => void;
   onPlayPvP: () => void;
   onPlayBot: (difficulty: 'easy' | 'medium' | 'hard') => void;
   onPlaySolo: () => void;
@@ -23,7 +25,7 @@ interface Props {
   onSettings: () => void;
 }
 
-export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard, onSettings }: Props) {
+export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, noAds, onRemoveAds, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard, onSettings }: Props) {
   const [showShop, setShowShop] = React.useState(false);
   const [showLang, setShowLang] = React.useState(false);
   const [showBotModal, setShowBotModal] = React.useState(false);
@@ -34,7 +36,9 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
       <ShopModal visible={showShop} energy={energy} maxEnergy={maxEnergy}
         onClose={() => setShowShop(false)}
         onWatchAd={() => { onWatchAd?.(); setShowShop(false); }}
-        onBuy={onBuy} adLoaded={adLoaded || false} />
+        onBuy={onBuy} adLoaded={adLoaded || false}
+        noAds={noAds || false}
+        onRemoveAds={onRemoveAds || (() => {})} />
       <LanguageModal visible={showLang} onClose={() => setShowLang(false)} />
 
       <View style={styles.header}>
@@ -95,6 +99,10 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
             <Text style={styles.btn2Sub}>{t('soloSub')}</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity onPress={() => setShowShop(true)} style={styles.shopBtn}>
+          <Text style={styles.shopBtnText}>🛒 SHOP</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={onLeaderboard} style={styles.leaderboardBtn}>
           <Text style={styles.leaderboardBtnText}>{t('leaderboard')} ›</Text>
@@ -194,6 +202,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   leaderboardBtnText: { fontSize: 16, fontWeight: '900', color: theme.colors.warning, letterSpacing: 1 },
+  shopBtn: {
+    backgroundColor: theme.colors.bgCard, borderRadius: 16,
+    paddingVertical: 14, paddingHorizontal: 24,
+    borderWidth: 2, borderColor: theme.colors.accent2, alignItems: 'center',
+  },
+  shopBtnText: { fontSize: 16, fontWeight: '900', color: theme.colors.accent2, letterSpacing: 1 },
   tagline: { textAlign: 'center', color: theme.colors.text3, fontSize: 12, paddingBottom: 12, fontStyle: 'italic' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard: { backgroundColor: theme.colors.bgCard, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, gap: 10 },
