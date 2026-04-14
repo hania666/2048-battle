@@ -11,6 +11,7 @@ import { MatchResultScreen } from './src/screens/MatchResultScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { PrivacyPolicyScreen } from './src/screens/PrivacyPolicyScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
 import { usePlayer } from './src/hooks/usePlayer';
 import { getEloDiff } from './src/game/elo';
 import { supabase } from './src/utils/supabase';
@@ -22,7 +23,7 @@ import { soundManager } from './src/utils/soundManager';
 import { useSettings } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile';
 
 interface MatchData {
   matchId: string;
@@ -122,6 +123,7 @@ export default function App() {
           onRemoveAds={purchaseNoAds}
           adLoaded={adLoaded}
           onSettings={() => setScreen('settings')}
+          onProfile={() => setScreen('profile')}
           onPlayPvP={() => setScreen('matchmaking')}
           onLeaderboard={() => setScreen('leaderboard')}
           onPlayBot={(diff) => { setBotDifficulty(diff); setScreen('bot'); }}
@@ -157,6 +159,14 @@ export default function App() {
                 total_games: player.total_games + 1,
                 total_wins: player.total_wins + (won ? 1 : 0),
               }).eq('id', player.id);
+              await supabase.from('match_history').insert({
+                player_id: player.id,
+                opponent_nickname: matchData?.opponentNickname || 'Unknown',
+                my_score: myScore,
+                opponent_score: opponentScore,
+                won,
+                elo_change: eloDiff,
+              });
             } catch (e) { console.warn('ELO update error:', e); }
             setResultData({ won, myScore, opponentScore, opponentNickname: matchData.opponentNickname, eloDiff });
             setScreen('result');
@@ -190,6 +200,16 @@ export default function App() {
 
       {screen === 'settings' && (
         <SettingsScreen onBack={() => setScreen('home')} onPrivacyPolicy={() => setScreen('privacy')} />
+      )}
+
+      {screen === 'profile' && (
+        <ProfileScreen
+          player={player}
+          onBack={() => setScreen('home')}
+          onNicknameChange={(nickname) => {
+            player.nickname = nickname;
+          }}
+        />
       )}
 
       {screen === 'privacy' && (

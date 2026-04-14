@@ -23,9 +23,10 @@ interface Props {
   onPlaySolo: () => void;
   onLeaderboard: () => void;
   onSettings: () => void;
+  onProfile: () => void;
 }
 
-export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, noAds, onRemoveAds, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard, onSettings }: Props) {
+export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchAd, onBuy, adLoaded, noAds, onRemoveAds, onPlayPvP, onPlayBot, onPlaySolo, onLeaderboard, onSettings, onProfile }: Props) {
   const [showShop, setShowShop] = React.useState(false);
   const [showLang, setShowLang] = React.useState(false);
   const [showBotModal, setShowBotModal] = React.useState(false);
@@ -54,7 +55,7 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
         </TouchableOpacity>
       </View>
 
-      <View style={styles.playerCard}>
+      <TouchableOpacity onPress={onProfile} style={styles.playerCard}>
         <View style={styles.playerInfo}>
           <Text style={styles.playerName}>👤 {player.nickname}</Text>
           <Text style={styles.playerElo}>⚡ {player.elo} ELO</Text>
@@ -77,7 +78,7 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
             <Text style={styles.statLabel}>WR</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
 
       <EnergyBar energy={energy} maxEnergy={maxEnergy}
         timeUntilRegen={timeUntilRegen}
