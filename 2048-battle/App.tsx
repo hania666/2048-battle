@@ -13,6 +13,7 @@ import { SettingsScreen } from './src/screens/SettingsScreen';
 import { PrivacyPolicyScreen } from './src/screens/PrivacyPolicyScreen';
 import { AchievementsScreen } from './src/screens/AchievementsScreen';
 import { useAchievements } from './src/hooks/useAchievements';
+import { useDailyTasks } from './src/hooks/useDailyTasks';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { usePlayer } from './src/hooks/usePlayer';
 import { getEloDiff } from './src/game/elo';
@@ -50,6 +51,7 @@ export default function App() {
   const { settings } = useSettings();
   const { noAds, purchaseNoAds } = useNoAds();
   const { achievements, checkAchievements, unlockedCount } = useAchievements();
+  const { updateProgress } = useDailyTasks();
   const { loaded: adLoaded, showAd } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
@@ -176,6 +178,9 @@ export default function App() {
                 won,
                 elo_change: eloDiff,
               });
+            await updateProgress('matches', 1);
+            if (won) await updateProgress('wins', 1);
+            await updateProgress('score', myScore);
             const newlyUnlocked = await checkAchievements({
               wins: player.total_wins + (won ? 1 : 0),
               matches: player.total_games + 1,
