@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "2048-battle",
+    "name": "2048 Battle",
     "slug": "2048-battle",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.battle2048.app",
-      "googleMobileAdsAppId": "ca-app-pub-7052877159805288~1929926938"
+      "googleMobileAdsAppId": "ca-app-pub-7052877159805288~1929926938",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
