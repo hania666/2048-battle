@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '../i18n/useLanguage';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 interface Props {
   onStart: (nickname: string) => void;
@@ -14,6 +15,15 @@ interface Props {
 export function OnboardingScreen({ onStart, loading }: Props) {
   const [nickname, setNickname] = useState('');
   const { t } = useLanguage();
+  const { signInWithGoogle, loading: googleLoading } = useGoogleAuth();
+
+  const handleGoogleSignIn = async () => {
+    const user = await signInWithGoogle();
+    if (user) {
+      const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Player';
+      onStart(name);
+    }
+  };
 
   const handleStart = () => {
     const name = nickname.trim() || 'Player' + Math.floor(Math.random() * 9999);
@@ -49,6 +59,22 @@ export function OnboardingScreen({ onStart, loading }: Props) {
           >
             <Text style={styles.startBtnText}>
               {loading ? t('loading') : t('startPlaying')}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity
+            onPress={handleGoogleSignIn}
+            disabled={googleLoading}
+            style={[styles.googleBtn, googleLoading && styles.startBtnDisabled]}
+          >
+            <Text style={styles.googleBtnText}>
+              {googleLoading ? '...' : '🔑 Sign in with Google'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -92,6 +118,15 @@ const styles = StyleSheet.create({
     paddingVertical: 18, alignItems: 'center',
   },
   startBtnDisabled: { opacity: 0.6 },
+  divider: { flexDirection: 'row', alignItems: 'center', marginVertical: 12 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#e0d6cc' },
+  dividerText: { marginHorizontal: 12, color: '#bbada0', fontWeight: '600', fontSize: 13 },
+  googleBtn: {
+    backgroundColor: '#fff', borderRadius: 12,
+    paddingVertical: 16, alignItems: 'center',
+    borderWidth: 2, borderColor: '#e0d6cc',
+  },
+  googleBtnText: { color: '#776e65', fontSize: 16, fontWeight: '700' },
   startBtnText: { color: '#fff', fontSize: 18, fontWeight: '900', letterSpacing: 2 },
   features: { gap: 10 },
   feature: { fontSize: 15, color: '#776e65', fontWeight: '500' },

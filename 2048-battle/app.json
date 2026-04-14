@@ -37,6 +37,7 @@
       "eas": {
         "projectId": "4a52ae5e-3d64-4040-82cf-e7a717f3361a"
       }
-    }
+    },
+    "scheme": "com.battle2048.app"
   }
 }
