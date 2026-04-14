@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Board, Direction, MoveResult, initGame, move, addRandomTile, hasMovesLeft, getMaxTile } from '../game/logic';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { soundManager } from '../utils/soundManager';
 
 export interface GameState {
   board: Board;
@@ -45,6 +46,7 @@ export function useGame(seed?: number) {
       const newScore = prev.score + result.score;
       const maxTile = getMaxTile(newBoard);
       const gameOver = !hasMovesLeft(newBoard);
+      if (result.score > 0) soundManager.playMerge();
       return { ...prev, board: newBoard, score: newScore, maxTile, gameOver, moves: prev.moves + 1 };
     });
   }, []);

@@ -29,10 +29,10 @@ export function GameBoard({ board, size = DEFAULT_SIZE }: Props) {
 
 const styles = StyleSheet.create({
   board: {
-    backgroundColor: '#0A0A14',
+    backgroundColor: '#C8B8A8',
     padding: 4,
     borderWidth: 1,
-    borderColor: '#2D3748',
+    borderColor: '#C8B8A8',
   },
   row: { flexDirection: 'row' },
 });

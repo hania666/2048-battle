@@ -10,14 +10,17 @@ import { GameScreen } from './src/screens/GameScreen';
 import { MatchResultScreen } from './src/screens/MatchResultScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
+import { PrivacyPolicyScreen } from './src/screens/PrivacyPolicyScreen';
 import { usePlayer } from './src/hooks/usePlayer';
 import { getEloDiff } from './src/game/elo';
 import { supabase } from './src/utils/supabase';
 import { useEnergy } from './src/hooks/useEnergy';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
+import { soundManager } from './src/utils/soundManager';
+import { useSettings } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy';
 
 interface MatchData {
   matchId: string;
@@ -38,6 +41,25 @@ export default function App() {
   const { player, loading, createPlayer } = usePlayer();
   const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
   const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
+  const { settings } = useSettings();
+
+  React.useEffect(() => {
+    const initSound = async () => {
+      try {
+        await soundManager.init();
+        await soundManager.playMusic();
+        console.log('Sound initialized OK');
+      } catch (e) {
+        console.warn('Sound init error:', e);
+      }
+    };
+    initSound();
+    return () => { soundManager.stopMusic(); };
+  }, []);
+
+  React.useEffect(() => {
+    soundManager.updateSettings(settings.sound, settings.music);
+  }, [settings.sound, settings.music]);
   const [showBonus, setShowBonus] = useState(false);
 
   React.useEffect(() => {
@@ -161,7 +183,11 @@ export default function App() {
       )}
 
       {screen === 'settings' && (
-        <SettingsScreen onBack={() => setScreen('home')} />
+        <SettingsScreen onBack={() => setScreen('home')} onPrivacyPolicy={() => setScreen('privacy')} />
+      )}
+
+      {screen === 'privacy' && (
+        <PrivacyPolicyScreen onBack={() => setScreen('settings')} />
       )}
 
       {screen === 'leaderboard' && (
@@ -179,7 +205,7 @@ export default function App() {
           myNickname={player.nickname}
           opponentNickname={resultData.opponentNickname}
           eloDiff={resultData.eloDiff}
-          onPlayAgain={() => setScreen('matchmaking')}
+          onPlayAgain={() => setScreen('home')}
           onHome={() => setScreen('home')}
         />
       )}

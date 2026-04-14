@@ -7,6 +7,7 @@ import { GameBoard } from '../components/GameBoard';
 import { SwipeHandler } from '../components/SwipeHandler';
 import { Player } from '../hooks/usePlayer';
 import { initGame } from '../game/logic';
+import { soundManager } from '../utils/soundManager';
 
 const { width } = Dimensions.get('window');
 const MATCH_DURATION = 120;
@@ -70,6 +71,7 @@ export function BotGameScreen({ player, difficulty = 'medium', onFinish, onBack 
 
   useEffect(() => {
     if (timeLeft === 0 && !finished) handleFinish();
+    if (timeLeft === 30) soundManager.playMusic();
   }, [timeLeft]);
 
   // Если у игрока game over — финишируем сразу с текущим счётом бота

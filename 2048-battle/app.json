@@ -30,7 +30,8 @@
       "expo-asset",
       "react-native-google-mobile-ads",
       "expo-web-browser",
-      "expo-localization"
+      "expo-localization",
+      "expo-audio"
     ],
     "extra": {
       "eas": {

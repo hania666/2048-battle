@@ -6,11 +6,13 @@ const SETTINGS_KEY = 'settings_2048';
 
 interface Settings {
   sound: boolean;
+  music: boolean;
   vibration: boolean;
 }
 
 const DEFAULT_SETTINGS: Settings = {
   sound: true,
+  music: true,
   vibration: true,
 };
 
@@ -19,7 +21,7 @@ export function useSettings() {
 
   useEffect(() => {
     AsyncStorage.getItem(SETTINGS_KEY).then(data => {
-      if (data) setSettings(JSON.parse(data));
+      if (data) setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(data) });
     });
   }, []);
 

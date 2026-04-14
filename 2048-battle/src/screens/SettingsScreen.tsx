@@ -2,14 +2,16 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSettings } from '../hooks/useSettings';
+import { theme } from '../utils/theme';
 import { useLanguage } from '../i18n/useLanguage';
 import { LanguageModal } from '../components/LanguageModal';
 
 interface Props {
   onBack: () => void;
+  onPrivacyPolicy: () => void;
 }
 
-export function SettingsScreen({ onBack }: Props) {
+export function SettingsScreen({ onBack, onPrivacyPolicy }: Props) {
   const { settings, updateSetting } = useSettings();
   const { t, language } = useLanguage();
   const [showLang, setShowLang] = React.useState(false);
@@ -39,16 +41,32 @@ export function SettingsScreen({ onBack }: Props) {
 
         <View style={styles.row}>
           <View style={styles.rowLeft}>
+            <Text style={styles.rowIcon}>🎵</Text>
+            <View>
+              <Text style={styles.rowTitle}>Background Music</Text>
+              <Text style={styles.rowSub}>Music during gameplay</Text>
+            </View>
+          </View>
+          <Switch
+            value={settings.music}
+            onValueChange={val => updateSetting('music', val)}
+            trackColor={{ false: '#e0d6cc', true: theme.colors.accent1 }}
+            thumbColor="#fff"
+          />
+        </View>
+
+        <View style={styles.row}>
+          <View style={styles.rowLeft}>
             <Text style={styles.rowIcon}>🔊</Text>
             <View>
               <Text style={styles.rowTitle}>Sound Effects</Text>
-              <Text style={styles.rowSub}>Game sounds and music</Text>
+              <Text style={styles.rowSub}>Merge sounds and alerts</Text>
             </View>
           </View>
           <Switch
             value={settings.sound}
             onValueChange={val => updateSetting('sound', val)}
-            trackColor={{ false: '#e0d6cc', true: '#f65e3b' }}
+            trackColor={{ false: '#e0d6cc', true: theme.colors.accent1 }}
             thumbColor="#fff"
           />
         </View>
@@ -96,6 +114,17 @@ export function SettingsScreen({ onBack }: Props) {
             </View>
           </View>
         </View>
+
+        <TouchableOpacity onPress={onPrivacyPolicy} style={styles.row}>
+          <View style={styles.rowLeft}>
+            <Text style={styles.rowIcon}>🔒</Text>
+            <View>
+              <Text style={styles.rowTitle}>Privacy Policy</Text>
+              <Text style={styles.rowSub}>How we handle your data</Text>
+            </View>
+          </View>
+          <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
