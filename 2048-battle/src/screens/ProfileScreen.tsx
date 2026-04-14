@@ -19,9 +19,12 @@ interface Props {
   player: Player;
   onBack: () => void;
   onNicknameChange: (nickname: string) => void;
+  onAchievements: () => void;
+  unlockedCount: number;
+  totalAchievements: number;
 }
 
-export function ProfileScreen({ player, onBack, onNicknameChange }: Props) {
+export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements, unlockedCount, totalAchievements }: Props) {
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(player.nickname);
   const [history, setHistory] = useState<MatchHistoryItem[]>([]);
@@ -87,6 +90,9 @@ export function ProfileScreen({ player, onBack, onNicknameChange }: Props) {
                 </TouchableOpacity>
               )}
               <Text style={styles.eloText}>⚡ {player.elo} ELO</Text>
+            <TouchableOpacity onPress={onAchievements} style={styles.achBtn}>
+              <Text style={styles.achBtnText}>🏅 {unlockedCount}/{totalAchievements} Achievements</Text>
+            </TouchableOpacity>
             </View>
 
             <View style={styles.statsCard}>
@@ -174,6 +180,12 @@ const styles = StyleSheet.create({
   saveBtn: { backgroundColor: theme.colors.accent1, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
   saveBtnText: { color: '#fff', fontWeight: '900', fontSize: 16 },
   eloText: { fontSize: 18, fontWeight: '800', color: theme.colors.accent1 },
+  achBtn: {
+    marginTop: 8, backgroundColor: theme.colors.bgCard2,
+    borderRadius: 10, paddingHorizontal: 16, paddingVertical: 8,
+    borderWidth: 1, borderColor: theme.colors.warning,
+  },
+  achBtnText: { fontSize: 13, fontWeight: '700', color: theme.colors.warning },
   statsCard: {
     backgroundColor: theme.colors.bgCard, borderRadius: 16, padding: 16,
     flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20,

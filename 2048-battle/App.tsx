@@ -11,6 +11,8 @@ import { MatchResultScreen } from './src/screens/MatchResultScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { PrivacyPolicyScreen } from './src/screens/PrivacyPolicyScreen';
+import { AchievementsScreen } from './src/screens/AchievementsScreen';
+import { useAchievements } from './src/hooks/useAchievements';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { usePlayer } from './src/hooks/usePlayer';
 import { getEloDiff } from './src/game/elo';
@@ -23,7 +25,7 @@ import { soundManager } from './src/utils/soundManager';
 import { useSettings } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile' | 'achievements';
 
 interface MatchData {
   matchId: string;
@@ -38,6 +40,7 @@ interface ResultData {
   opponentScore: number;
   opponentNickname: string;
   eloDiff: number;
+  streak?: number;
 }
 
 export default function App() {
@@ -46,6 +49,7 @@ export default function App() {
   const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
   const { settings } = useSettings();
   const { noAds, purchaseNoAds } = useNoAds();
+  const { achievements, checkAchievements, unlockedCount } = useAchievements();
   const { loaded: adLoaded, showAd } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
@@ -154,10 +158,15 @@ export default function App() {
             const eloDiff = getEloDiff(player.elo, 1000, won);
             const newElo = player.elo + eloDiff;
             try {
+              const currentStreak = (player as any).win_streak || 0;
+              const newStreak = won ? currentStreak + 1 : 0;
+              const bestStreak = Math.max((player as any).best_streak || 0, newStreak);
               await supabase.from('players').update({
                 elo: newElo,
                 total_games: player.total_games + 1,
                 total_wins: player.total_wins + (won ? 1 : 0),
+                win_streak: newStreak,
+                best_streak: bestStreak,
               }).eq('id', player.id);
               await supabase.from('match_history').insert({
                 player_id: player.id,
@@ -167,8 +176,19 @@ export default function App() {
                 won,
                 elo_change: eloDiff,
               });
+            const newlyUnlocked = await checkAchievements({
+              wins: player.total_wins + (won ? 1 : 0),
+              matches: player.total_games + 1,
+              streak: won ? ((player as any).win_streak || 0) + 1 : 0,
+              elo: newElo,
+            });
+            if (newlyUnlocked.length > 0) {
+              const totalReward = newlyUnlocked.reduce((s, a) => s + a.reward, 0);
+              if (totalReward > 0) await addEnergy(totalReward);
+            }
             } catch (e) { console.warn('ELO update error:', e); }
-            setResultData({ won, myScore, opponentScore, opponentNickname: matchData.opponentNickname, eloDiff });
+            const newStreak = won ? ((player as any).win_streak || 0) + 1 : 0;
+            setResultData({ won, myScore, opponentScore, opponentNickname: matchData?.opponentNickname || '', eloDiff, streak: newStreak });
             setScreen('result');
           }}
         />
@@ -202,13 +222,22 @@ export default function App() {
         <SettingsScreen onBack={() => setScreen('home')} onPrivacyPolicy={() => setScreen('privacy')} />
       )}
 
+      {screen === 'achievements' && (
+        <AchievementsScreen
+          achievements={achievements}
+          unlockedCount={unlockedCount}
+          onBack={() => setScreen('profile')}
+        />
+      )}
+
       {screen === 'profile' && (
         <ProfileScreen
           player={player}
           onBack={() => setScreen('home')}
-          onNicknameChange={(nickname) => {
-            player.nickname = nickname;
-          }}
+          onNicknameChange={(nickname) => { player.nickname = nickname; }}
+          onAchievements={() => setScreen('achievements')}
+          unlockedCount={unlockedCount}
+          totalAchievements={achievements.length}
         />
       )}
 
@@ -231,6 +260,7 @@ export default function App() {
           myNickname={player.nickname}
           opponentNickname={resultData.opponentNickname}
           eloDiff={resultData.eloDiff}
+          streak={resultData.streak}
           onPlayAgain={() => setScreen('home')}
           onHome={() => setScreen('home')}
         />
