@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { theme } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGame } from '../hooks/useGame';
 import { GameBoard } from '../components/GameBoard';
@@ -119,7 +120,7 @@ export function PvPGameScreen({ player, matchId, seed, isPlayer1, opponentNickna
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#faf8ef' },
+  container: { flex: 1, backgroundColor: theme.colors.bg },
   timerContainer: {
     alignItems: 'center', paddingVertical: 8,
     backgroundColor: '#bbada0', marginHorizontal: 20,

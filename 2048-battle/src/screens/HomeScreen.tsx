@@ -6,7 +6,6 @@ import { EnergyBar } from '../components/EnergyBar';
 import { ShopModal } from '../components/ShopModal';
 import { LanguageModal } from '../components/LanguageModal';
 import { DailyTasksWidget } from '../components/DailyTasksWidget';
-import { BottomNav } from '../components/BottomNav';
 import { useLanguage } from '../i18n/useLanguage';
 import { useDailyTasks } from '../hooks/useDailyTasks';
 import { theme } from '../utils/theme';
@@ -91,7 +90,7 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{(player as any).win_streak || 0}🔥</Text>
-              <Text style={styles.statLabel}>STREAK</Text>
+              <Text style={styles.statLabel}>{t('streakLabel')}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -130,13 +129,6 @@ export function HomeScreen({ player, energy, maxEnergy, timeUntilRegen, onWatchA
         <Text style={styles.tagline}>{t('tagline')}</Text>
       </ScrollView>
 
-      {/* Bottom Navigation */}
-      <BottomNav
-        active={activeTab}
-        onHome={() => setActiveTab('home')}
-        onLeaders={handleLeaders}
-        onProfile={handleProfile}
-      />
 
       {/* Bot difficulty modal */}
       <Modal visible={showBotModal} transparent animationType="slide">

@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity,
   FlatList, ActivityIndicator, RefreshControl,
 } from 'react-native';
+import { theme } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLeaderboard, LeaderboardEntry } from '../hooks/useLeaderboard';
 import { useLanguage } from '../i18n/useLanguage';
@@ -104,14 +105,14 @@ export function LeaderboardScreen({ currentPlayerId, onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#faf8ef' },
+  container: { flex: 1, backgroundColor: theme.colors.bg },
   header: {
     flexDirection: 'row', alignItems: 'center',
     justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12,
   },
   backBtn: {
     width: 40, height: 40, borderRadius: 12,
-    backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: theme.colors.bgCard, alignItems: 'center', justifyContent: 'center',
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08, shadowRadius: 4, elevation: 3,
   },
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
   sortRow: { flexDirection: 'row', paddingHorizontal: 20, gap: 8, marginBottom: 12 },
   sortBtn: {
     flex: 1, paddingVertical: 8, borderRadius: 10,
-    backgroundColor: '#fff', alignItems: 'center',
+    backgroundColor: theme.colors.bgCard, alignItems: 'center',
     borderWidth: 2, borderColor: 'transparent',
   },
   sortBtnActive: { borderColor: '#f65e3b', backgroundColor: '#fff8f6' },
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   list: { paddingHorizontal: 20, paddingBottom: 20 },
   row: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', borderRadius: 14,
+    backgroundColor: theme.colors.bgCard, borderRadius: 14,
     padding: 14, marginBottom: 8,
     shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,

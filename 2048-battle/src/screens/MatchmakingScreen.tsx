@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity,
   ActivityIndicator, Animated,
 } from 'react-native';
+import { theme } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Player } from '../hooks/usePlayer';
 import { useMatchmaking } from '../hooks/useMatchmaking';
@@ -95,12 +96,12 @@ export function MatchmakingScreen({ player, onMatchFound, onCancel, onSpendEnerg
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#faf8ef' },
+  container: { flex: 1, backgroundColor: theme.colors.bg },
   content: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   title: { fontSize: 32, fontWeight: '900', color: '#776e65', letterSpacing: 4, marginBottom: 48 },
   searchCircle: {
     width: 120, height: 120, borderRadius: 60,
-    backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: theme.colors.bgCard, alignItems: 'center', justifyContent: 'center',
     shadowColor: '#f65e3b', shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3, shadowRadius: 20, elevation: 10,
     marginBottom: 32,
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
   eloText: { fontSize: 16, color: '#bbada0' },
   foundContainer: { flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 24 },
   playerCard: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 20,
+    backgroundColor: theme.colors.bgCard, borderRadius: 16, padding: 20,
     alignItems: 'center', minWidth: 120,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1, shadowRadius: 8, elevation: 4,

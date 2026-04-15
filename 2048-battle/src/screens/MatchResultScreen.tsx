@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Animated,
 } from 'react-native';
+import { theme } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Props {
@@ -93,7 +94,7 @@ export function MatchResultScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#faf8ef' },
+  container: { flex: 1, backgroundColor: theme.colors.bg },
   content: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   result: { fontSize: 42, fontWeight: '900', marginBottom: 40, letterSpacing: 2 },
   win: { color: '#f65e3b' },
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     gap: 12, marginBottom: 24, width: '100%',
   },
   scoreCard: {
-    flex: 1, backgroundColor: '#fff', borderRadius: 16,
+    flex: 1, backgroundColor: theme.colors.bgCard, borderRadius: 16,
     padding: 20, alignItems: 'center',
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08, shadowRadius: 8, elevation: 4,

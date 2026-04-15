@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated } from 'react-native';
+import { theme } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGame } from '../hooks/useGame';
 import { useBot } from '../hooks/useBot';
@@ -167,7 +168,7 @@ export function BotGameScreen({ player, difficulty = 'medium', onFinish, onBack 
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#faf8ef' },
+  container: { flex: 1, backgroundColor: theme.colors.bg },
   timerContainer: {
     alignItems: 'center', paddingVertical: 8,
     backgroundColor: '#bbada0', marginHorizontal: 20,
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12,
   },
   scoreCard: {
-    flex: 1, backgroundColor: '#fff', borderRadius: 14,
+    flex: 1, backgroundColor: theme.colors.bgCard, borderRadius: 14,
     padding: 12, alignItems: 'center',
     borderWidth: 2, borderColor: 'transparent',
   },

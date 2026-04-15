@@ -26,6 +26,7 @@ import { useRewardedAd } from './src/hooks/useRewardedAd';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { soundManager } from './src/utils/soundManager';
 import { LanguageProvider, useLanguage } from './src/i18n/useLanguage';
+import { BottomNav } from './src/components/BottomNav';
 import { useSettings } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -285,6 +286,14 @@ export default function App() {
           streak={resultData.streak}
           onPlayAgain={() => setScreen('home')}
           onHome={() => setScreen('home')}
+        />
+      )}
+      {['home', 'leaderboard', 'profile', 'achievements', 'skins'].includes(screen) && (
+        <BottomNav
+          active={screen === 'leaderboard' ? 'leaders' : screen === 'achievements' || screen === 'skins' ? 'profile' : screen as any}
+          onHome={() => setScreen('home')}
+          onLeaders={() => setScreen('leaderboard')}
+          onProfile={() => setScreen('profile')}
         />
       )}
     </SafeAreaProvider>

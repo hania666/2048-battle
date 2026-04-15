@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DailyTask } from '../hooks/useDailyTasks';
+import { useLanguage } from '../i18n/useLanguage';
 import { theme } from '../utils/theme';
 
 interface Props {
@@ -9,12 +10,13 @@ interface Props {
 }
 
 export function DailyTasksWidget({ tasks, completedCount }: Props) {
+  const { t } = useLanguage();
   if (tasks.length === 0) return null;
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>📋 DAILY TASKS</Text>
+        <Text style={styles.title}>{`📋 ${t('dailyTasks')}`}</Text>
         <Text style={styles.progress}>{completedCount}/{tasks.length}</Text>
       </View>
       {tasks.map(task => (
