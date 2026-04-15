@@ -8,6 +8,7 @@ import { GameBoard } from '../components/GameBoard';
 import { SwipeHandler } from '../components/SwipeHandler';
 import { Player } from '../hooks/usePlayer';
 import { initGame } from '../game/logic';
+import { AppState } from 'react-native';
 import { soundManager } from '../utils/soundManager';
 
 const { width } = Dimensions.get('window');
@@ -37,6 +38,15 @@ export function BotGameScreen({ player, difficulty = 'medium', onFinish, onBack 
   const { state, makeMove } = useGame(seed);
   const [timeLeft, setTimeLeft] = useState(MATCH_DURATION);
   const [finished, setFinished] = useState(false);
+  const [paused, setPaused] = useState(false);
+
+  React.useEffect(() => {
+    const sub = AppState.addEventListener('change', state => {
+      if (state === 'background') setPaused(true);
+      if (state === 'active') setPaused(false);
+    });
+    return () => sub.remove();
+  }, []);
   const [botScore, setBotScore] = useState(0);
   const [botScoreFlash, setBotScoreFlash] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);

@@ -27,6 +27,7 @@ import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { soundManager } from './src/utils/soundManager';
 import { LanguageProvider, useLanguage } from './src/i18n/useLanguage';
 import { BottomNav } from './src/components/BottomNav';
+import { useNotifications } from './src/hooks/useNotifications';
 import { useSettings } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -57,7 +58,8 @@ export default function App() {
   const { achievements, checkAchievements, unlockedCount } = useAchievements();
   const { selectedSkin, ownedSkinIds, selectSkin, purchaseSkin, isSkinOwned } = useSkins();
   const { updateProgress } = useDailyTasks();
-  const { loaded: adLoaded, showAd } = useRewardedAd(() => addEnergy(2));
+  const { scheduleEnergyNotification, scheduleDailyBonusNotification } = useNotifications();
+  const { loaded: adLoaded, showAd: showAdRaw } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
     const initSound = async () => {
@@ -88,6 +90,8 @@ export default function App() {
     setShowBonus(false);
   };
   const [screen, setScreen] = useState<Screen>('home');
+  const inGame = ['pvp', 'bot', 'matchmaking'].includes(screen);
+  const showAd = inGame ? undefined : showAdRaw;
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [botDifficulty, setBotDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
