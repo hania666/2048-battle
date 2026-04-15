@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let soundEnabled = true;
@@ -18,12 +17,6 @@ class SoundManager {
 
   async init() {
     await loadSettings();
-    try {
-      const { AudioPlayer, createAudioPlayer } = await import('expo-audio');
-      console.log('expo-audio loaded');
-    } catch (e) {
-      console.warn('expo-audio not available:', e);
-    }
   }
 
   async updateSettings(sound: boolean, music: boolean) {
@@ -78,8 +71,8 @@ class SoundManager {
     try {
       await this.stopMusic();
       const { createAudioPlayer } = await import('expo-audio');
-      this.musicPlayer = createAudioPlayer(require('../../assets/sounds/music.wav'));
-      this.musicPlayer.volume = 0.3;
+      this.musicPlayer = createAudioPlayer(require('../../assets/sounds/music.mp3'));
+      this.musicPlayer.volume = 0.25;
       this.musicPlayer.loop = true;
       this.musicPlayer.play();
       console.log('Music playing!');
