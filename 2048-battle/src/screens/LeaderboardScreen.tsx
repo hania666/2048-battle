@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLeaderboard, LeaderboardEntry } from '../hooks/useLeaderboard';
+import { useLanguage } from '../i18n/useLanguage';
 
 interface Props {
   currentPlayerId?: string;
@@ -17,6 +18,7 @@ const MEDALS = ['🥇', '🥈', '🥉'];
 
 export function LeaderboardScreen({ currentPlayerId, onBack }: Props) {
   const { entries, loading, fetchLeaderboard } = useLeaderboard();
+  const { t } = useLanguage();
   const [sortBy, setSortBy] = useState<SortBy>('elo');
 
   const handleSort = (sort: SortBy) => {
@@ -44,7 +46,7 @@ export function LeaderboardScreen({ currentPlayerId, onBack }: Props) {
           {sortBy === 'best_score' && <Text style={styles.mainValue}>{item.best_score.toLocaleString()}</Text>}
           {sortBy === 'total_wins' && <Text style={styles.mainValue}>{item.total_wins}</Text>}
           <Text style={styles.mainLabel}>
-            {sortBy === 'elo' ? 'ELO' : sortBy === 'best_score' ? 'BEST' : 'WINS'}
+            {sortBy === 'elo' ? 'ELO' : sortBy === 'best_score' ? t('best') : t('winsLabel')}
           </Text>
         </View>
       </View>
@@ -57,7 +59,7 @@ export function LeaderboardScreen({ currentPlayerId, onBack }: Props) {
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
           <Text style={styles.backBtnText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>LEADERBOARD</Text>
+        <Text style={styles.title}>{t('leaderboardTitle')}</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -69,7 +71,7 @@ export function LeaderboardScreen({ currentPlayerId, onBack }: Props) {
             style={[styles.sortBtn, sortBy === sort && styles.sortBtnActive]}
           >
             <Text style={[styles.sortBtnText, sortBy === sort && styles.sortBtnTextActive]}>
-              {sort === 'elo' ? '⚡ ELO' : sort === 'best_score' ? '🎯 SCORE' : '🏆 WINS'}
+              {sort === 'elo' ? '⚡ ELO' : sort === 'best_score' ? '🎯 ' + t('score') : '🏆 ' + t('winsLabel')}
             </Text>
           </TouchableOpacity>
         ))}

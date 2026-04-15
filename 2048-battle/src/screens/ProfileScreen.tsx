@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Player } from '../hooks/usePlayer';
 import { supabase } from '../utils/supabase';
+import { useLanguage } from '../i18n/useLanguage';
 import { theme } from '../utils/theme';
 
 interface MatchHistoryItem {
@@ -20,15 +21,17 @@ interface Props {
   onBack: () => void;
   onNicknameChange: (nickname: string) => void;
   onAchievements: () => void;
+  onSkins: () => void;
   unlockedCount: number;
   totalAchievements: number;
 }
 
-export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements, unlockedCount, totalAchievements }: Props) {
+export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements, onSkins, unlockedCount, totalAchievements }: Props) {
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(player.nickname);
   const [history, setHistory] = useState<MatchHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => { loadHistory(); }, []);
 
@@ -64,7 +67,7 @@ export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
           <Text style={styles.backBtnText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>PROFILE</Text>
+        <Text style={styles.title}>{t('profile')}</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -90,6 +93,10 @@ export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements
                 </TouchableOpacity>
               )}
               <Text style={styles.eloText}>⚡ {player.elo} ELO</Text>
+            <TouchableOpacity onPress={onSkins} style={styles.achBtn}>
+              <Text style={styles.achBtnText}>🎨 Tile Skins</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={onAchievements} style={styles.achBtn}>
               <Text style={styles.achBtnText}>🏅 {unlockedCount}/{totalAchievements} Achievements</Text>
             </TouchableOpacity>
@@ -98,12 +105,12 @@ export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements
             <View style={styles.statsCard}>
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>{player.total_games}</Text>
-                <Text style={styles.statLabel}>GAMES</Text>
+                <Text style={styles.statLabel}>{t('gamesLabel')}</Text>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>{player.total_wins}</Text>
-                <Text style={styles.statLabel}>WINS</Text>
+                <Text style={styles.statLabel}>{t('winsLabel')}</Text>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
@@ -113,11 +120,11 @@ export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>{(player as any).win_streak || 0}</Text>
-                <Text style={styles.statLabel}>STREAK</Text>
+                <Text style={styles.statLabel}>{t('streakLabel')}</Text>
               </View>
             </View>
 
-            <Text style={styles.historyTitle}>MATCH HISTORY</Text>
+            <Text style={styles.historyTitle}>{t('matchHistory')}</Text>
           </View>
         )}
         ListEmptyComponent={() => (

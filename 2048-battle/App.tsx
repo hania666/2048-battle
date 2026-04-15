@@ -13,6 +13,8 @@ import { SettingsScreen } from './src/screens/SettingsScreen';
 import { PrivacyPolicyScreen } from './src/screens/PrivacyPolicyScreen';
 import { AchievementsScreen } from './src/screens/AchievementsScreen';
 import { useAchievements } from './src/hooks/useAchievements';
+import { useSkins } from './src/hooks/useSkins';
+import { SkinsScreen } from './src/screens/SkinsScreen';
 import { useDailyTasks } from './src/hooks/useDailyTasks';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { usePlayer } from './src/hooks/usePlayer';
@@ -23,10 +25,11 @@ import { useNoAds } from './src/hooks/useNoAds';
 import { useRewardedAd } from './src/hooks/useRewardedAd';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { soundManager } from './src/utils/soundManager';
+import { LanguageProvider, useLanguage } from './src/i18n/useLanguage';
 import { useSettings } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile' | 'achievements';
+type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile' | 'achievements' | 'skins';
 
 interface MatchData {
   matchId: string;
@@ -51,6 +54,7 @@ export default function App() {
   const { settings } = useSettings();
   const { noAds, purchaseNoAds } = useNoAds();
   const { achievements, checkAchievements, unlockedCount } = useAchievements();
+  const { selectedSkin, ownedSkinIds, selectSkin, purchaseSkin, isSkinOwned } = useSkins();
   const { updateProgress } = useDailyTasks();
   const { loaded: adLoaded, showAd } = useRewardedAd(() => addEnergy(2));
 
@@ -97,6 +101,7 @@ export default function App() {
   }
 
   return (
+    <LanguageProvider>
     <SafeAreaProvider>
       <Modal visible={showBonus} transparent animationType="fade">
         <View style={bonusStyles.overlay}>
@@ -227,6 +232,17 @@ export default function App() {
         <SettingsScreen onBack={() => setScreen('home')} onPrivacyPolicy={() => setScreen('privacy')} />
       )}
 
+      {screen === 'skins' && (
+        <SkinsScreen
+          selectedSkinId={selectedSkin.id}
+          ownedSkinIds={ownedSkinIds}
+          onSelect={selectSkin}
+          onPurchase={purchaseSkin}
+          onBack={() => setScreen('profile')}
+          isVip={noAds}
+        />
+      )}
+
       {screen === 'achievements' && (
         <AchievementsScreen
           achievements={achievements}
@@ -241,6 +257,7 @@ export default function App() {
           onBack={() => setScreen('home')}
           onNicknameChange={(nickname) => { player.nickname = nickname; }}
           onAchievements={() => setScreen('achievements')}
+          onSkins={() => setScreen('skins')}
           unlockedCount={unlockedCount}
           totalAchievements={achievements.length}
         />
@@ -271,6 +288,7 @@ export default function App() {
         />
       )}
     </SafeAreaProvider>
+    </LanguageProvider>
   );
 }
 

@@ -82,6 +82,7 @@ export const translations = {
     mediumSub: 'Balanced speed and strategy',
     hard: '🔴 HARD',
     hardSub: 'Fast moves, smart strategy',
+    settings: 'SETTINGS', audioFeedback: 'AUDIO & FEEDBACK', backgroundMusic: 'Background Music', musicSub: 'Music during gameplay', soundEffects: 'Sound Effects', soundSub: 'Merge sounds', vibration: 'Vibration', vibrationSub: 'Haptic feedback', language: 'Language', about: 'ABOUT', version: 'Version 1.0.0', privacyPolicy: 'Privacy Policy', privacyPolicySub: 'How we handle your data', profile: 'PROFILE', achievements: 'ACHIEVEMENTS', matchHistory: 'MATCH HISTORY', noMatches: 'No matches yet', noMatchesSub: 'Play a match!', gamesLabel: 'GAMES', winsLabel: 'WINS', winRateLabel: 'WIN RATE', streakLabel: 'STREAK', tileSkins: 'Tile Skins', back: 'BACK', newGame: 'NEW GAME', tryAgain: 'TRY AGAIN', gameOver: 'Game Over!', score: 'SCORE', best: 'BEST',
   },
 
   ru: {
@@ -156,6 +157,7 @@ export const translations = {
     medium: '🟡 СРЕДНИЙ',
     mediumSub: 'Баланс скорости и стратегии',
     hard: '🔴 СЛОЖНЫЙ',
+    settings: 'НАСТРОЙКИ', audioFeedback: 'ЗВУК И ВИБРАЦИЯ', backgroundMusic: 'Фоновая музыка', musicSub: 'Музыка во время игры', soundEffects: 'Звуковые эффекты', soundSub: 'Звуки слияния', vibration: 'Вибрация', vibrationSub: 'Тактильная отдача', language: 'Язык', about: 'О ПРИЛОЖЕНИИ', version: 'Версия 1.0.0', privacyPolicy: 'Конфиденциальность', privacyPolicySub: 'Как мы используем данные', profile: 'ПРОФИЛЬ', achievements: 'ДОСТИЖЕНИЯ', matchHistory: 'ИСТОРИЯ МАТЧЕЙ', noMatches: 'Матчей нет', noMatchesSub: 'Сыграйте матч!', gamesLabel: 'ИГРЫ', winsLabel: 'ПОБЕДЫ', winRateLabel: 'ПОБЕДЫ %', streakLabel: 'СЕРИЯ', tileSkins: 'Скины плиток', back: 'НАЗАД', newGame: 'НОВАЯ ИГРА', tryAgain: 'ЕЩЁ РАЗ', gameOver: 'Игра окончена!', score: 'ОЧКИ', best: 'РЕКОРД',
     hardSub: 'Быстрые ходы, умная стратегия',
   },
 
@@ -230,6 +232,7 @@ export const translations = {
     easySub: 'Повільні ходи, випадкова стратегія',
     medium: '🟡 СЕРЕДНІЙ',
     mediumSub: 'Баланс швидкості та стратегії',
+    settings: 'НАЛАШТУВАННЯ', audioFeedback: 'ЗВУК І ВІБРАЦІЯ', backgroundMusic: 'Фонова музика', musicSub: 'Музика під час гри', soundEffects: 'Звукові ефекти', soundSub: 'Звуки злиття', vibration: 'Вібрація', vibrationSub: 'Тактильний відгук', language: 'Мова', about: 'ПРО ДОДАТОК', version: 'Версія 1.0.0', privacyPolicy: 'Конфіденційність', privacyPolicySub: 'Як ми використовуємо дані', profile: 'ПРОФІЛЬ', achievements: 'ДОСЯГНЕННЯ', matchHistory: 'ІСТОРІЯ МАТЧІВ', noMatches: 'Матчів немає', noMatchesSub: 'Зіграйте матч!', gamesLabel: 'ІГРИ', winsLabel: 'ПЕРЕМОГИ', winRateLabel: 'ПЕРЕМОГИ %', streakLabel: 'СЕРІЯ', tileSkins: 'Скіни плиток', back: 'НАЗАД', newGame: 'НОВА ГРА', tryAgain: 'ЩЕ РАЗ', gameOver: 'Гра закінчена!', score: 'ОЧКИ', best: 'РЕКОРД',
     hard: '🔴 СКЛАДНИЙ',
     hardSub: 'Швидкі ходи, розумна стратегія',
   },
@@ -304,13 +307,13 @@ export const translations = {
     easy: '🟢 FÁCIL',
     easySub: 'Movimientos lentos, estrategia aleatoria',
     medium: '🟡 MEDIO',
+    settings: 'AJUSTES', audioFeedback: 'AUDIO', backgroundMusic: 'Musica de fondo', musicSub: 'Musica durante el juego', soundEffects: 'Efectos de sonido', soundSub: 'Sonidos', vibration: 'Vibracion', vibrationSub: 'Feedback haptico', language: 'Idioma', about: 'ACERCA DE', version: 'Version 1.0.0', privacyPolicy: 'Privacidad', privacyPolicySub: 'Tus datos', profile: 'PERFIL', achievements: 'LOGROS', matchHistory: 'HISTORIAL', noMatches: 'Sin partidas', noMatchesSub: 'Juega una partida!', gamesLabel: 'PARTIDAS', winsLabel: 'VICTORIAS', winRateLabel: 'VICTORIAS %', streakLabel: 'RACHA', tileSkins: 'Skins', back: 'ATRAS', newGame: 'NUEVO JUEGO', tryAgain: 'INTENTAR', gameOver: 'Fin del juego!', score: 'PUNTOS', best: 'RECORD',
     mediumSub: 'Velocidad y estrategia equilibradas',
     hard: '🔴 DIFÍCIL',
     hardSub: 'Movimientos rápidos, estrategia inteligente',
   },
   fr: {
-    yourNickname: "VOTRE PSEUDO", enterNickname: "Entrez un pseudo...",
-    startPlaying: "COMMENCER", loading: "CHARGEMENT...",
+    yourNickname: "VOTRE PSEUDO", enterNickname: "Entrez un pseudo...", startPlaying: "COMMENCER", loading: "CHARGEMENT...",
     pvpDesc: "Defiez des joueurs du monde entier en temps reel",
     feature1: "Matchs PvP en temps reel", feature2: "Classement mondial",
     feature3: "Systeme ELO", feature4: "Gameplay skill",
@@ -329,7 +332,7 @@ export const translations = {
     unlimited: "Illimite 24h", unlimitedSub: "Joue autant que tu veux",
     supportText: "Les achats aident au developpement",
     dailyBonus: "BONUS QUOTIDIEN!", dayStreak: "Jours consecutifs", claim: "RECLAMER!",
-    findingOpponent: "Recherche adversaire...", matchFound: "Match trouve! Prepare-toi...", cancel: "ANNULER",
+    findingOpponent: "Recherche adversaire...", matchFound: "Partie trouve! Prepare-toi...", cancel: "ANNULER",
     giveUp: "ABANDONNER", moves: "Coups", bestTile: "Meilleure tuile",
     boardFull: "Plateau plein - scores finaux!", winning: "EN TETE",
     victory: "VICTOIRE!", defeat: "DEFAITE",
@@ -340,7 +343,23 @@ export const translations = {
     easy: "FACILE", easySub: "Mouvements lents",
     medium: "MOYEN", mediumSub: "Vitesse et strategie",
     hard: "DIFFICILE", hardSub: "Mouvements rapides",
+    settings: "PARAMETRES", audioFeedback: "AUDIO ET RETOUR",
+    backgroundMusic: "Musique de fond", musicSub: "Musique pendant le jeu",
+    soundEffects: "Effets sonores", soundSub: "Sons de fusion",
+    vibration: "Vibration", vibrationSub: "Retour haptique",
+    language: "Langue", about: "A PROPOS", version: "Version 1.0.0",
+    privacyPolicy: "Confidentialite", privacyPolicySub: "Comment nous gerons vos donnees",
+    profile: "PROFIL", achievements: "SUCCES",
+    matchHistory: "HISTORIQUE", noMatches: "Pas de parties",
+    noMatchesSub: "Jouez une partie!", gamesLabel: "PARTIES",
+    winsLabel: "VICTOIRES", winRateLabel: "VICTOIRES %", streakLabel: "SERIE",
+    tileSkins: "Skins", back: "RETOUR", newGame: "NOUVELLE PARTIE",
+    tryAgain: "REESSAYER", gameOver: "Partie terminee!", score: "SCORE", best: "RECORD",
+    dailyTasks: "TACHES DU JOUR", reachTile: "Atteindre tuile",
+    playMatches: "Jouer parties", winMatches: "Gagner parties", scorePoints: "Marquer points",
+    searching: "Recherche adversaire...", matchFoundReady: "Partie trouvee! Prepare-toi...",
   },
+
 };
 
 export type Language = keyof typeof translations;

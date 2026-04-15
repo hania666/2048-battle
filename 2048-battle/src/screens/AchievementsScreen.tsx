@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Achievement } from '../hooks/useAchievements';
+import { useLanguage } from '../i18n/useLanguage';
 import { theme } from '../utils/theme';
 
 interface Props {
@@ -11,19 +12,20 @@ interface Props {
 }
 
 export function AchievementsScreen({ achievements, unlockedCount, onBack }: Props) {
+  const { t } = useLanguage();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
           <Text style={styles.backBtnText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>ACHIEVEMENTS</Text>
+        <Text style={styles.title}>{t('achievements')}</Text>
         <View style={styles.placeholder} />
       </View>
 
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
-          {unlockedCount}/{achievements.length} unlocked
+          {unlockedCount}/{achievements.length} {t('winsLabel').toLowerCase()}
         </Text>
         <View style={styles.summaryBar}>
           <View style={[styles.summaryFill, { width: `${(unlockedCount / achievements.length) * 100}%` as any }]} />
