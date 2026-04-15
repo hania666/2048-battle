@@ -1,29 +1,44 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState, AppStateStatus } from 'react-native';
 
 let soundEnabled = true;
 let musicEnabled = true;
 
-async function loadSettings() {
-  const saved = await AsyncStorage.getItem('settings_2048');
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    soundEnabled = parsed.sound !== false;
-    musicEnabled = parsed.music !== false;
-  }
-}
-
 class SoundManager {
   private musicPlayer: any = null;
+  private initialized = false;
 
   async init() {
-    await loadSettings();
+    const saved = await AsyncStorage.getItem('settings_2048');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      soundEnabled = parsed.sound !== false;
+      musicEnabled = parsed.music !== false;
+    }
+
+    // Останавливаем музыку когда приложение уходит в фон
+    AppState.addEventListener('change', (state: AppStateStatus) => {
+      if (state === 'background' || state === 'inactive') {
+        this.stopMusic();
+      } else if (state === 'active' && musicEnabled) {
+        this.playMusic();
+      }
+    });
+
+    this.initialized = true;
+    if (musicEnabled) {
+      await this.playMusic();
+    }
   }
 
   async updateSettings(sound: boolean, music: boolean) {
     soundEnabled = sound;
     musicEnabled = music;
-    if (!music) await this.stopMusic();
-    else await this.playMusic();
+    if (!music) {
+      await this.stopMusic();
+    } else if (music && !this.musicPlayer) {
+      await this.playMusic();
+    }
   }
 
   async playMerge() {
@@ -68,8 +83,8 @@ class SoundManager {
 
   async playMusic() {
     if (!musicEnabled) return;
+    if (this.musicPlayer) return;
     try {
-      await this.stopMusic();
       const { createAudioPlayer } = await import('expo-audio');
       this.musicPlayer = createAudioPlayer(require('../../assets/sounds/music.mp3'));
       this.musicPlayer.volume = 0.25;

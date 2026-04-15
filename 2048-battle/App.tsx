@@ -62,22 +62,13 @@ export default function App() {
   const { loaded: adLoaded, showAd: showAdRaw } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
-    const initSound = async () => {
-      try {
-        await soundManager.init();
-        await soundManager.playMusic();
-        console.log('Sound initialized OK');
-      } catch (e) {
-        console.warn('Sound init error:', e);
-      }
-    };
-    initSound();
+    soundManager.init().then(() => {
+      console.log('Sound initialized OK');
+    }).catch(e => console.warn('Sound init error:', e));
     return () => { soundManager.stopMusic(); };
   }, []);
 
-  React.useEffect(() => {
-    soundManager.updateSettings(settings.sound, settings.music);
-  }, [settings.sound, settings.music]);
+
   const [showBonus, setShowBonus] = useState(false);
 
   React.useEffect(() => {
