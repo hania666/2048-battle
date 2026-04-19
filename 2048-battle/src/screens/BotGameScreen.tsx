@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated } from 'react-native';
 import { theme } from '../utils/theme';
+import { TileSkin } from '../utils/tileSkins';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGame } from '../hooks/useGame';
 import { useBot } from '../hooks/useBot';
@@ -19,6 +20,7 @@ interface Props {
   difficulty?: 'easy' | 'medium' | 'hard';
   onFinish: (won: boolean, myScore: number, botScore: number) => void;
   onBack: () => void;
+  skin?: any;
 }
 
 const BOT_NAMES = {
@@ -33,7 +35,7 @@ const BOT_DELAYS = {
   hard: { min: 200, max: 450 },
 };
 
-export function BotGameScreen({ player, difficulty = 'medium', onFinish, onBack }: Props) {
+export function BotGameScreen({ player, difficulty = 'medium', onFinish, onBack, skin }: Props) {
   const seed = useRef(Math.floor(Math.random() * 1000000)).current;
   const { state, makeMove } = useGame(seed);
   const [timeLeft, setTimeLeft] = useState(MATCH_DURATION);
@@ -157,7 +159,7 @@ export function BotGameScreen({ player, difficulty = 'medium', onFinish, onBack 
 
       {/* My board only */}
       <SwipeHandler onSwipe={makeMove}>
-        <GameBoard board={state.board} size={boardSize} />
+        <GameBoard board={state.board} size={boardSize} skin={skin} />
       </SwipeHandler>
 
       <View style={styles.statsRow}>

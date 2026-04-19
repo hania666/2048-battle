@@ -47,18 +47,18 @@ export function LanguageModal({ visible, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'flex-end' },
   card: {
-    backgroundColor: '#faf8ef', borderTopLeftRadius: 24,
+    backgroundColor: '#F5F0EB', borderTopLeftRadius: 24,
     borderTopRightRadius: 24, padding: 24, gap: 8,
   },
   title: { fontSize: 18, fontWeight: '900', color: '#776e65', letterSpacing: 2, marginBottom: 8, textAlign: 'center' },
   item: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: '#fff', borderRadius: 14, padding: 16,
+    backgroundColor: '#F5F0EB', borderRadius: 14, padding: 16,
     borderWidth: 2, borderColor: 'transparent',
   },
-  itemActive: { borderColor: '#f65e3b', backgroundColor: '#fff8f6' },
+  itemActive: { borderColor: '#f65e3b', backgroundColor: '#FDF0EC' },
   flag: { fontSize: 28 },
   name: { flex: 1, fontSize: 16, fontWeight: '700', color: '#776e65' },
   nameActive: { color: '#f65e3b' },

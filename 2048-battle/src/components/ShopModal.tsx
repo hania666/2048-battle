@@ -137,7 +137,7 @@ export function ShopModal({ visible, energy, maxEnergy, noAds, onClose, onWatchA
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'flex-end' },
   card: {
     backgroundColor: theme.colors.bg, borderTopLeftRadius: 24,
     borderTopRightRadius: 24, padding: 24, maxHeight: '85%',

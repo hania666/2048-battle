@@ -205,6 +205,7 @@ export default function App() {
         <BotGameScreen
           player={player}
           difficulty={botDifficulty}
+          skin={selectedSkin}
           onFinish={(won, myScore, botScore) => {
             setResultData({
               won, myScore, opponentScore: botScore,
@@ -221,6 +222,7 @@ export default function App() {
       {screen === 'solo' && (
         <GameScreen
           player={player}
+          skin={selectedSkin}
           onBack={() => setScreen('home')}
         />
       )}

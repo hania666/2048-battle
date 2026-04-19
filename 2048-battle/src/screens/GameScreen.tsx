@@ -6,8 +6,9 @@ import { GameBoard } from '../components/GameBoard';
 import { SwipeHandler } from '../components/SwipeHandler';
 import { Player } from '../hooks/usePlayer';
 import { theme } from '../utils/theme';
+import { TileSkin } from '../utils/tileSkins';
 
-export function GameScreen({ player, onBack }: { player: Player; onBack?: () => void }) {
+export function GameScreen({ player, onBack, skin }: { player: Player; onBack?: () => void; skin?: any }) {
   const { state, makeMove, resetGame } = useGame();
 
   return (
@@ -32,7 +33,7 @@ export function GameScreen({ player, onBack }: { player: Player; onBack?: () => 
       </View>
 
       <SwipeHandler onSwipe={makeMove}>
-        <GameBoard board={state.board} />
+        <GameBoard board={state.board} skin={skin} />
       </SwipeHandler>
 
       <View style={styles.buttons}>

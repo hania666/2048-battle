@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text } from 'react-native';
 import { theme } from '../utils/theme';
+import { TileSkin } from '../utils/tileSkins';
 
 interface Props {
   value: number;
   size: number;
+  skin?: TileSkin;
 }
 
 function getFontSize(value: number, size: number): number {
@@ -14,7 +16,7 @@ function getFontSize(value: number, size: number): number {
   return size * 0.42;
 }
 
-export function Tile({ value, size }: Props) {
+export function Tile({ value, size, skin }: Props) {
   const scaleAnim = useRef(new Animated.Value(value ? 0.7 : 1)).current;
 
   useEffect(() => {
@@ -25,7 +27,9 @@ export function Tile({ value, size }: Props) {
     }
   }, [value]);
 
-  const colors = (theme.tiles as any)[value] || { bg: '#2D1B69', text: '#C4B5FD' };
+  const skinTile = skin?.tiles[value] || skin?.tiles[0];
+  const defaultColors = (theme.tiles as any)[value] || { bg: '#2D1B69', text: '#C4B5FD' };
+  const colors = skinTile || defaultColors;
   const isSpecial = value >= 128;
 
   return (
