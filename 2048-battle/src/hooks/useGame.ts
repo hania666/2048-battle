@@ -33,7 +33,7 @@ export function useGame(seed?: number) {
   useEffect(() => {
     if (state.score > state.bestScore) {
       AsyncStorage.setItem(BEST_SCORE_KEY, state.score.toString());
-      setState(prev => ({ ...prev, bestScore: state.score }));
+      setState(prev => prev.score > prev.bestScore ? { ...prev, bestScore: prev.score } : prev);
     }
   }, [state.score]);
 
