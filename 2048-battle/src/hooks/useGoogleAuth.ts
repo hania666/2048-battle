@@ -18,6 +18,9 @@ export function useGoogleAuth() {
         options: {
           redirectTo: 'com.battle2048.app://auth/callback',
           skipBrowserRedirect: true,
+          queryParams: {
+            client_id: '297772176529-ddrp3braobv4ku18bpctpuu4n6vhtap0.apps.googleusercontent.com',
+          },
         },
       });
 
