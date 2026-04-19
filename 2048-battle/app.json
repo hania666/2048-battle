@@ -33,7 +33,13 @@
     },
     "plugins": [
       "expo-asset",
-      "react-native-google-mobile-ads",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-7052877159805288~1929926938",
+          "iosAppId": "ca-app-pub-7052877159805288~1929926938"
+        }
+      ],
       "expo-web-browser",
       "expo-localization",
       "expo-audio"
