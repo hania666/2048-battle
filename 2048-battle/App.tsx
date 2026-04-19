@@ -214,8 +214,7 @@ export default function App() {
               if (totalReward > 0) await addEnergy(totalReward);
             }
             } catch (e) { console.warn('ELO update error:', e); }
-            const newStreak = won ? ((player as any).win_streak || 0) + 1 : 0;
-            setResultData({ won, myScore, opponentScore, opponentNickname: matchData?.opponentNickname || '', eloDiff, streak: newStreak });
+            setResultData({ won, myScore, opponentScore, opponentNickname: matchData?.opponentNickname || '', eloDiff, streak: won ? (player.win_streak || 0) + 1 : 0 });
             showAfterMatch();
           }}
         />
@@ -270,7 +269,7 @@ export default function App() {
             setResultData({ won, myScore, opponentScore: botScore, opponentNickname, eloDiff, streak: newStreak });
             setScreen('result');
           }}
-          onBack={() => setScreen('home')}
+          onBack={async () => { await addEnergy(1); setScreen('home'); }}
         />
       )}
 
