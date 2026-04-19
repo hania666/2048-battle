@@ -337,7 +337,16 @@ export default function App() {
           opponentNickname={resultData.opponentNickname}
           eloDiff={resultData.eloDiff}
           streak={resultData.streak}
-          onPlayAgain={() => setScreen('home')}
+          onPlayAgain={() => {
+            const isBot = resultData.opponentNickname.includes('Bot');
+            if (isBot) setScreen('bot');
+            else setScreen('matchmaking');
+          }}
+          onRematch={() => {
+            const isBot = resultData.opponentNickname.includes('Bot');
+            if (isBot) setScreen('bot');
+            else setScreen('matchmaking');
+          }}
           onHome={() => setScreen('home')}
         />
       )}
