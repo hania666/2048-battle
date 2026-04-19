@@ -15,13 +15,14 @@ interface Props {
   streak?: number;
   onPlayAgain: () => void;
   onHome: () => void;
+  onRematch?: () => void;
 }
 
 export function MatchResultScreen({
   won, myScore, opponentScore,
   myNickname, opponentNickname,
   eloDiff, streak,
-  onPlayAgain, onHome,
+  onPlayAgain, onHome, onRematch,
 }: Props) {
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -81,7 +82,13 @@ export function MatchResultScreen({
         </View>
 
         <View style={styles.buttons}>
-          <TouchableOpacity onPress={onPlayAgain} style={styles.playAgainBtn}>
+          {onRematch && (
+          <TouchableOpacity onPress={onRematch} style={styles.rematchBtn}>
+            <Text style={styles.rematchText}>⚔️ РЕВАНШ</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity onPress={onPlayAgain} style={styles.playAgainBtn}>
             <Text style={styles.playAgainText}>🎮 PLAY AGAIN</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onHome} style={styles.homeBtn}>
@@ -127,6 +134,11 @@ const styles = StyleSheet.create({
   },
   streakText: { fontSize: 18, fontWeight: '900', color: '#E65100' },
   buttons: { width: '100%', gap: 12 },
+  rematchBtn: {
+    backgroundColor: '#2C3E50', borderRadius: 14,
+    paddingVertical: 14, alignItems: 'center', marginBottom: 8,
+  },
+  rematchText: { color: '#fff', fontSize: 16, fontWeight: '900', letterSpacing: 2 },
   playAgainBtn: {
     backgroundColor: '#f65e3b', borderRadius: 12,
     paddingVertical: 18, alignItems: 'center',

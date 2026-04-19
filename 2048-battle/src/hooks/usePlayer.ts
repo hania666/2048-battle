@@ -8,6 +8,8 @@ export interface Player {
   elo: number;
   total_games: number;
   total_wins: number;
+  win_streak: number;
+  best_streak: number;
 }
 
 const PLAYER_KEY = 'player_2048_local';
@@ -42,6 +44,8 @@ export function usePlayer() {
         elo: 1000,
         total_games: 0,
         total_wins: 0,
+        win_streak: 0,
+        best_streak: 0,
       };
 
       // Пробуем сохранить в Supabase
@@ -86,6 +90,23 @@ export function usePlayer() {
     }
   }, []);
 
+  const updatePlayer = useCallback(async (updates: Partial<Player>) => {
+    if (!player) return;
+    const updated = { ...player, ...updates };
+    // Сохраняем локально всегда
+    await AsyncStorage.setItem(PLAYER_KEY, JSON.stringify(updated));
+    setPlayer(updated);
+    // Пробуем синхронизировать с Supabase
+    if (!player.id.startsWith('local_')) {
+      try {
+        const { supabase } = await import('../utils/supabase');
+        await supabase.from('players').update(updates).eq('id', player.id);
+      } catch (e) {
+        console.warn('Supabase sync error, saved locally:', e);
+      }
+    }
+  }, [player]);
+
   const updateNickname = useCallback(async (nickname: string) => {
     if (!player) return;
     const updated = { ...player, nickname };
@@ -93,5 +114,5 @@ export function usePlayer() {
     setPlayer(updated);
   }, [player]);
 
-  return { player, loading, createPlayer, updateNickname };
+  return { player, loading, createPlayer, updateNickname, updatePlayer };
 }

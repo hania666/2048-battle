@@ -32,7 +32,7 @@ import { useNotifications } from './src/hooks/useNotifications';
 import { useInterstitialAd } from './src/hooks/useInterstitialAd';
 import { useSettings, SettingsProvider } from './src/hooks/useSettings';
 import { useGoogleAuth } from './src/hooks/useGoogleAuth';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, AppState } from 'react-native';
 
 type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile' | 'achievements' | 'skins';
 
@@ -53,7 +53,7 @@ interface ResultData {
 }
 
 export default function App() {
-  const { player, loading, createPlayer } = usePlayer();
+  const { player, loading, createPlayer, updatePlayer } = usePlayer();
   const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
   const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
   const { settings } = useSettings();
@@ -184,6 +184,14 @@ export default function App() {
                 win_streak: newStreak,
                 best_streak: bestStreak,
               }).eq('id', player.id);
+              // Обновляем локально чтобы UI сразу отражал новые данные
+              await updatePlayer({
+                elo: newElo,
+                total_games: player.total_games + 1,
+                total_wins: player.total_wins + (won ? 1 : 0),
+                win_streak: newStreak,
+                best_streak: bestStreak,
+              });
               await supabase.from('match_history').insert({
                 player_id: player.id,
                 opponent_nickname: matchData?.opponentNickname || 'Unknown',
@@ -218,13 +226,48 @@ export default function App() {
           player={player}
           difficulty={botDifficulty}
           skin={selectedSkin}
-          onFinish={(won, myScore, botScore) => {
-            setResultData({
-              won, myScore, opponentScore: botScore,
-              opponentNickname: botDifficulty === 'easy' ? '🤖 EasyBot' :
-                botDifficulty === 'medium' ? '🤖 MediumBot' : '🤖 HardBot',
-              eloDiff: 0,
+          onFinish={async (won, myScore, botScore) => {
+            if (!player) return;
+            const botElo = botDifficulty === 'easy' ? 800 : botDifficulty === 'medium' ? 1000 : 1200;
+            const eloDiff = getEloDiff(player.elo, botElo, won);
+            const newElo = Math.max(100, player.elo + eloDiff);
+            const newStreak = won ? ((player as any).win_streak || 0) + 1 : 0;
+            const bestStreak = Math.max((player as any).best_streak || 0, newStreak);
+            const opponentNickname = botDifficulty === 'easy' ? '🤖 EasyBot' :
+              botDifficulty === 'medium' ? '🤖 MediumBot' : '🤖 HardBot';
+            // Обновляем player локально и в Supabase
+            await updatePlayer({
+              elo: newElo,
+              total_games: player.total_games + 1,
+              total_wins: player.total_wins + (won ? 1 : 0),
+              win_streak: newStreak,
+              best_streak: bestStreak,
             });
+            // Пишем в match_history
+            try {
+              await supabase.from('match_history').insert({
+                player_id: player.id,
+                opponent_nickname: opponentNickname,
+                my_score: myScore,
+                opponent_score: botScore,
+                won,
+                elo_change: eloDiff,
+              });
+            } catch (e) { console.warn('match_history bot error:', e); }
+            await updateProgress('matches', 1);
+            if (won) await updateProgress('wins', 1);
+            await updateProgress('score', myScore);
+            const newlyUnlocked = await checkAchievements({
+              wins: player.total_wins + (won ? 1 : 0),
+              matches: player.total_games + 1,
+              streak: newStreak,
+              elo: newElo,
+            });
+            if (newlyUnlocked.length > 0) {
+              const totalReward = newlyUnlocked.reduce((s, a) => s + a.reward, 0);
+              if (totalReward > 0) await addEnergy(totalReward);
+            }
+            setResultData({ won, myScore, opponentScore: botScore, opponentNickname, eloDiff, streak: newStreak });
             setScreen('result');
           }}
           onBack={() => setScreen('home')}
