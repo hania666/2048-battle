@@ -27,6 +27,12 @@ export function PvPGameScreen({ player, matchId, seed, isPlayer1, opponentNickna
   const [opponentScore, setOpponentScore] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const subRef = useRef<any>(null);
+  const finishedRef = useRef(false);
+  const myScoreRef = useRef(0);
+  const oppScoreRef = useRef(0);
+  const OPPONENT_TIMEOUT = 15000; // 15 сек без обновления — считаем что вышел
+  const oppLastUpdateRef = useRef(Date.now());
+  const oppTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     subRef.current = supabase
@@ -37,12 +43,22 @@ export function PvPGameScreen({ player, matchId, seed, isPlayer1, opponentNickna
       }, (payload: any) => {
         const m = payload.new;
         const oppScore = isPlayer1 ? m.player2_score : m.player1_score;
+        oppScoreRef.current = oppScore || 0;
+        oppLastUpdateRef.current = Date.now();
         setOpponentScore(oppScore || 0);
-        if (m.status === 'finished') handleFinish(state.score, oppScore || 0);
+        if (m.status === 'finished' && !finishedRef.current) {
+          handleFinish(myScoreRef.current, oppScore || 0);
+        }
       })
       .subscribe();
 
     timerRef.current = setInterval(() => {
+      // Проверяем не вышел ли противник
+      if (Date.now() - oppLastUpdateRef.current > OPPONENT_TIMEOUT) {
+        // Противник неактивен — засчитываем победу
+        if (!finishedRef.current) handleFinish(myScoreRef.current, -1);
+        return;
+      }
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timerRef.current!);
@@ -55,6 +71,7 @@ export function PvPGameScreen({ player, matchId, seed, isPlayer1, opponentNickna
     return () => {
       subRef.current?.unsubscribe();
       if (timerRef.current) clearInterval(timerRef.current);
+      if (oppTimeoutRef.current) clearTimeout(oppTimeoutRef.current);
     };
   }, []);
 
@@ -63,18 +80,21 @@ export function PvPGameScreen({ player, matchId, seed, isPlayer1, opponentNickna
   }, [timeLeft]);
 
   useEffect(() => {
+    myScoreRef.current = state.score;
     if (state.moves % 3 === 0 && state.moves > 0) {
       const update = isPlayer1
         ? { player1_score: state.score, player1_board: state.board }
         : { player2_score: state.score, player2_board: state.board };
-      supabase.from('matches').update(update).eq('id', matchId);
+      void supabase.from('matches').update(update).eq('id', matchId);
     }
   }, [state.moves]);
 
   const handleFinish = useCallback(async (myScore: number, oppScore: number) => {
-    if (finished) return;
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     setFinished(true);
     if (timerRef.current) clearInterval(timerRef.current);
+    if (oppTimeoutRef.current) clearTimeout(oppTimeoutRef.current);
     const update = isPlayer1
       ? { player1_score: myScore, player1_board: state.board, status: 'finished' }
       : { player2_score: myScore, player2_board: state.board, status: 'finished' };
