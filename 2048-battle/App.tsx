@@ -28,6 +28,7 @@ import { soundManager } from './src/utils/soundManager';
 import { LanguageProvider, useLanguage } from './src/i18n/useLanguage';
 import { BottomNav } from './src/components/BottomNav';
 import { useNotifications } from './src/hooks/useNotifications';
+import { useInterstitialAd } from './src/hooks/useInterstitialAd';
 import { useSettings, SettingsProvider } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -59,9 +60,11 @@ export default function App() {
   const { selectedSkin, ownedSkinIds, selectSkin, purchaseSkin, isSkinOwned } = useSkins();
   const { updateProgress } = useDailyTasks();
   const { scheduleEnergyNotification, scheduleDailyBonusNotification } = useNotifications();
+  const { loadAd, showAfterMatch } = useInterstitialAd(() => setScreen('result'));
   const { loaded: adLoaded, showAd: showAdRaw } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
+    loadAd();
     soundManager.init().then(() => {
       console.log('Sound initialized OK');
     }).catch(e => console.warn('Sound init error:', e));
@@ -196,7 +199,7 @@ export default function App() {
             } catch (e) { console.warn('ELO update error:', e); }
             const newStreak = won ? ((player as any).win_streak || 0) + 1 : 0;
             setResultData({ won, myScore, opponentScore, opponentNickname: matchData?.opponentNickname || '', eloDiff, streak: newStreak });
-            setScreen('result');
+            showAfterMatch();
           }}
         />
       )}
