@@ -22,11 +22,12 @@ interface Props {
   onNicknameChange: (nickname: string) => void;
   onAchievements: () => void;
   onSkins: () => void;
+  onSignOut: () => void;
   unlockedCount: number;
   totalAchievements: number;
 }
 
-export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements, onSkins, unlockedCount, totalAchievements }: Props) {
+export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements, onSkins, onSignOut, unlockedCount, totalAchievements }: Props) {
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(player.nickname);
   const [history, setHistory] = useState<MatchHistoryItem[]>([]);
@@ -70,6 +71,10 @@ export function ProfileScreen({ player, onBack, onNicknameChange, onAchievements
         <Text style={styles.title}>{t('profile')}</Text>
         <View style={styles.placeholder} />
       </View>
+
+      <TouchableOpacity onPress={onSignOut} style={styles.signOutBtn}>
+        <Text style={styles.signOutText}>🚪 Sign Out</Text>
+      </TouchableOpacity>
 
       <FlatList
         data={history}
@@ -187,6 +192,12 @@ const styles = StyleSheet.create({
   saveBtn: { backgroundColor: theme.colors.accent1, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
   saveBtnText: { color: '#fff', fontWeight: '900', fontSize: 16 },
   eloText: { fontSize: 18, fontWeight: '800', color: theme.colors.accent1 },
+  signOutBtn: {
+    marginHorizontal: 20, marginBottom: 8, backgroundColor: theme.colors.bgCard,
+    borderRadius: 12, paddingVertical: 12, alignItems: 'center',
+    borderWidth: 1, borderColor: theme.colors.border,
+  },
+  signOutText: { fontSize: 14, fontWeight: '700', color: '#E74C3C' },
   achBtn: {
     marginTop: 8, backgroundColor: theme.colors.bgCard2,
     borderRadius: 10, paddingHorizontal: 16, paddingVertical: 8,
