@@ -25,6 +25,9 @@ export function useDailyBonus() {
     const twoDaysMs = 48 * 60 * 60 * 1000;
     if (elapsed >= oneDayMs) {
       const newStreak = elapsed >= twoDaysMs ? 0 : currentStreak;
+      if (elapsed >= twoDaysMs && currentStreak > 0) {
+        await AsyncStorage.setItem(STREAK_KEY, '0');
+      }
       setStreak(newStreak);
       setNextBonus(BONUSES[Math.min(newStreak, BONUSES.length - 1)]);
       setCanClaim(true);
