@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState } from 'react-native';
 
 let soundEnabled = true;
 let musicEnabled = true;
 
 class SoundManager {
   private musicPlayer: any = null;
-  private initialized = false;
+  private appStateSubscription: any = null;
 
   async init() {
     const saved = await AsyncStorage.getItem('settings_2048');
@@ -16,16 +16,18 @@ class SoundManager {
       musicEnabled = parsed.music !== false;
     }
 
-    // Останавливаем музыку когда приложение уходит в фон
-    AppState.addEventListener('change', (state: AppStateStatus) => {
+    if (this.appStateSubscription) {
+      this.appStateSubscription.remove();
+    }
+
+    this.appStateSubscription = AppState.addEventListener('change', async (state) => {
       if (state === 'background' || state === 'inactive') {
-        this.stopMusic();
+        await this.pauseMusic();
       } else if (state === 'active' && musicEnabled) {
-        this.playMusic();
+        await this.resumeMusic();
       }
     });
 
-    this.initialized = true;
     if (musicEnabled) {
       await this.playMusic();
     }
@@ -90,15 +92,33 @@ class SoundManager {
       this.musicPlayer.volume = 0.25;
       this.musicPlayer.loop = true;
       this.musicPlayer.play();
-      console.log('Music playing!');
     } catch (e) {
       console.warn('Music error:', e);
     }
   }
 
+  async pauseMusic() {
+    try {
+      if (this.musicPlayer) {
+        this.musicPlayer.pause();
+      }
+    } catch (e) {}
+  }
+
+  async resumeMusic() {
+    try {
+      if (this.musicPlayer) {
+        this.musicPlayer.play();
+      } else {
+        await this.playMusic();
+      }
+    } catch (e) {}
+  }
+
   async stopMusic() {
     try {
       if (this.musicPlayer) {
+        this.musicPlayer.pause();
         this.musicPlayer.remove();
         this.musicPlayer = null;
       }

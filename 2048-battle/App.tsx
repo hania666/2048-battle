@@ -28,7 +28,7 @@ import { soundManager } from './src/utils/soundManager';
 import { LanguageProvider, useLanguage } from './src/i18n/useLanguage';
 import { BottomNav } from './src/components/BottomNav';
 import { useNotifications } from './src/hooks/useNotifications';
-import { useSettings } from './src/hooks/useSettings';
+import { useSettings, SettingsProvider } from './src/hooks/useSettings';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 type Screen = 'home' | 'matchmaking' | 'pvp' | 'bot' | 'solo' | 'result' | 'leaderboard' | 'settings' | 'privacy' | 'profile' | 'achievements' | 'skins';
@@ -98,6 +98,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
+    <SettingsProvider>
     <SafeAreaProvider>
       <Modal visible={showBonus} transparent animationType="fade">
         <View style={bonusStyles.overlay}>
@@ -292,6 +293,7 @@ export default function App() {
         />
       )}
     </SafeAreaProvider>
+    </SettingsProvider>
     </LanguageProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { soundManager } from '../utils/soundManager';
@@ -17,20 +17,31 @@ const DEFAULT_SETTINGS: Settings = {
   vibration: true,
 };
 
-export function useSettings() {
+interface SettingsContextType {
+  settings: Settings;
+  updateSetting: (key: keyof Settings, value: boolean) => Promise<void>;
+  vibrate: (type?: 'light' | 'medium' | 'heavy') => Promise<void>;
+}
+
+const SettingsContext = createContext<SettingsContextType>({
+  settings: DEFAULT_SETTINGS,
+  updateSetting: async () => {},
+  vibrate: async () => {},
+});
+
+export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(SETTINGS_KEY).then(data => {
       if (data) {
-        const parsed = { ...DEFAULT_SETTINGS, ...JSON.parse(data) };
+        const saved = JSON.parse(data);
+        const parsed = { ...DEFAULT_SETTINGS, ...saved };
         setSettings(parsed);
         soundManager.updateSettings(parsed.sound, parsed.music);
       } else {
         soundManager.updateSettings(true, true);
       }
-      setLoaded(true);
     });
   }, []);
 
@@ -48,5 +59,13 @@ export function useSettings() {
     if (type === 'heavy') await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
   };
 
-  return { settings, updateSetting, vibrate, loaded };
+  return React.createElement(
+    SettingsContext.Provider,
+    { value: { settings, updateSetting, vibrate } },
+    children
+  );
+}
+
+export function useSettings() {
+  return useContext(SettingsContext);
 }
