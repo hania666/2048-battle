@@ -22,7 +22,11 @@
       },
       "package": "com.battle2048.app",
       "googleMobileAdsAppId": "ca-app-pub-7052877159805288~1929926938",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,9 +40,10 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "4a52ae5e-3d64-4040-82cf-e7a717f3361a"
+        "projectId": "95fd3038-9c7f-4236-b80c-3edef20e6fd8"
       }
     },
-    "scheme": "com.battle2048.app"
+    "scheme": "com.battle2048.app",
+    "owner": "asa666"
   }
 }

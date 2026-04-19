@@ -25,6 +25,7 @@ import { useNoAds } from './src/hooks/useNoAds';
 import { useRewardedAd } from './src/hooks/useRewardedAd';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { soundManager } from './src/utils/soundManager';
+import { Platform } from 'react-native';
 import { LanguageProvider, useLanguage } from './src/i18n/useLanguage';
 import { BottomNav } from './src/components/BottomNav';
 import { useNotifications } from './src/hooks/useNotifications';
@@ -64,6 +65,12 @@ export default function App() {
   const { loaded: adLoaded, showAd: showAdRaw } = useRewardedAd(() => addEnergy(2));
 
   React.useEffect(() => {
+    // Инициализируем AdMob
+    if (!__DEV__) {
+      import('react-native-google-mobile-ads').then(({ default: MobileAds }) => {
+        MobileAds().initialize().catch((e: any) => console.warn('AdMob init error:', e));
+      }).catch(() => {});
+    }
     loadAd();
     soundManager.init().then(() => {
       console.log('Sound initialized OK');
