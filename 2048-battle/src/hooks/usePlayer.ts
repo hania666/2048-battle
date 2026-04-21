@@ -114,5 +114,10 @@ export function usePlayer() {
     setPlayer(updated);
   }, [player]);
 
-  return { player, loading, createPlayer, updateNickname, updatePlayer };
+  const resetPlayer = useCallback(async () => {
+    await AsyncStorage.removeItem(PLAYER_KEY);
+    setPlayer(null);
+  }, []);
+
+  return { player, loading, createPlayer, updateNickname, updatePlayer, resetPlayer };
 }

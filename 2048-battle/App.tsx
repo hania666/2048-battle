@@ -53,7 +53,7 @@ interface ResultData {
 }
 
 export default function App() {
-  const { player, loading, createPlayer, updatePlayer } = usePlayer();
+  const { player, loading, createPlayer, updatePlayer, resetPlayer } = usePlayer();
   const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
   const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
   const { settings } = useSettings();
@@ -311,7 +311,7 @@ export default function App() {
           onNicknameChange={(nickname) => { player.nickname = nickname; }}
           onAchievements={() => setScreen('achievements')}
           onSkins={() => setScreen('skins')}
-          onSignOut={async () => { await signOut(); setScreen('home'); }}
+          onSignOut={async () => { await signOut(); await resetPlayer(); setScreen('home'); }}
           unlockedCount={unlockedCount}
           totalAchievements={achievements.length}
         />
