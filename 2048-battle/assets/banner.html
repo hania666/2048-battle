@@ -6,7 +6,7 @@
 body { width: 1024px; height: 500px; overflow: hidden; }
 .banner {
   width: 1024px; height: 500px;
-  background: #0F0E17;
+  background: linear-gradient(135deg, #F9F6F0 0%, #EDE0D0 100%);
   display: flex; align-items: center;
   font-family: Georgia, serif;
 }
@@ -21,48 +21,48 @@ body { width: 1024px; height: 500px; overflow: hidden; }
 .tile {
   width: 96px; height: 96px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 48px; font-weight: 900; color: white;
+  font-size: 48px; font-weight: 900;
 }
-.t2048 { background: #F65E3B; }
-.t4 { background: #EAB84A; color: #7A5200; }
-.t8 { background: #4CAF82; }
-.t16 { background: #378ADD; }
-.title { font-size: 64px; font-weight: 900; color: white; }
+.t1 { background: #F65E3B; color: white; }
+.t2 { background: #EAB84A; color: #7A5200; }
+.t3 { background: #4CAF82; color: white; }
+.t4 { background: #378ADD; color: white; }
+.title { font-size: 64px; font-weight: 900; color: #333; }
 .title span { color: #F65E3B; }
-.subtitle { font-size: 16px; color: #888; letter-spacing: 3px; }
+.subtitle { font-size: 14px; color: #999; letter-spacing: 3px; font-family: Arial; }
 .right {
   flex: 1; padding: 40px;
-  border-left: 1px solid #222;
-  display: flex; flex-direction: column; gap: 24px;
+  border-left: 2px solid #E0D5C5;
+  display: flex; flex-direction: column; gap: 20px;
 }
 .feature { display: flex; align-items: center; gap: 16px; }
 .feat-icon {
-  width: 48px; height: 48px; border-radius: 12px;
+  width: 52px; height: 52px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
+  font-size: 26px;
 }
-.feat-title { font-size: 18px; font-weight: 700; color: white; }
-.feat-desc { font-size: 13px; color: #666; margin-top: 2px; }
-.divider { border: none; border-top: 1px solid #1a1a2e; }
+.feat-title { font-size: 18px; font-weight: 700; color: #222; font-family: Arial; }
+.feat-desc { font-size: 13px; color: #999; margin-top: 2px; font-family: Arial; }
+.divider { border: none; border-top: 1px solid #E0D5C5; }
 </style>
 </head>
 <body>
 <div class="banner">
   <div class="left">
     <div class="tile-grid">
-      <div class="tile t2048">20</div>
-      <div class="tile t4">48</div>
-      <div class="tile t8">8</div>
-      <div class="tile t16">16</div>
+      <div class="tile t1">20</div>
+      <div class="tile t2">48</div>
+      <div class="tile t3">8</div>
+      <div class="tile t4">16</div>
     </div>
     <div>
-      <div class="title"><span>2048</span> BATTLE</div>
+      <div class="title"><span>2048</span><br>BATTLE</div>
       <div class="subtitle">REAL-TIME PvP PUZZLE</div>
     </div>
   </div>
   <div class="right">
     <div class="feature">
-      <div class="feat-icon" style="background:#1a2a3a">⚔️</div>
+      <div class="feat-icon" style="background:#FEF0EB">⚔️</div>
       <div>
         <div class="feat-title">Real-time PvP</div>
         <div class="feat-desc">Challenge players worldwide</div>
@@ -70,7 +70,7 @@ body { width: 1024px; height: 500px; overflow: hidden; }
     </div>
     <hr class="divider">
     <div class="feature">
-      <div class="feat-icon" style="background:#2a1a1a">🏆</div>
+      <div class="feat-icon" style="background:#FDF6E3">🏆</div>
       <div>
         <div class="feat-title">ELO Rankings</div>
         <div class="feat-desc">Climb the global leaderboard</div>
@@ -78,7 +78,7 @@ body { width: 1024px; height: 500px; overflow: hidden; }
     </div>
     <hr class="divider">
     <div class="feature">
-      <div class="feat-icon" style="background:#1a2a1a">🤖</div>
+      <div class="feat-icon" style="background:#EBF7F1">🤖</div>
       <div>
         <div class="feat-title">Bot Battles</div>
         <div class="feat-desc">Easy, Medium & Hard AI</div>
@@ -86,7 +86,7 @@ body { width: 1024px; height: 500px; overflow: hidden; }
     </div>
     <hr class="divider">
     <div class="feature">
-      <div class="feat-icon" style="background:#1a1a2a">🎨</div>
+      <div class="feat-icon" style="background:#EBF3FD">🎨</div>
       <div>
         <div class="feat-title">Unique Skins</div>
         <div class="feat-desc">Unlock exclusive tile designs</div>
