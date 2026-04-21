@@ -22,7 +22,7 @@
       },
       "package": "com.battle2048.app",
       "googleMobileAdsAppId": "ca-app-pub-7052877159805288~1929926938",
-      "versionCode": 1,
+      "versionCode": 4,
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
