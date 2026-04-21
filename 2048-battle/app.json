@@ -42,7 +42,8 @@
       ],
       "expo-web-browser",
       "expo-localization",
-      "expo-audio"
+      "expo-audio",
+      "./copy-adi-plugin"
     ],
     "extra": {
       "eas": {
