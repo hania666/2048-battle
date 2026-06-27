@@ -10,7 +10,7 @@ import {
   Purchase,
 } from 'expo-iap';
 
-const PRODUCT_IDS = ['energy-10', 'energy-25', 'energy-unlimited', 'no-ads'];
+const PRODUCT_IDS = ['energy_10', 'energy_25', 'energy_unlimited', 'no_ads'];
 
 export function useIAP(onPurchaseSuccess: (productId: string) => void) {
   useEffect(() => {
@@ -24,7 +24,7 @@ export function useIAP(onPurchaseSuccess: (productId: string) => void) {
 
         purchaseUpdateSub = purchaseUpdatedListener(async (purchase: Purchase) => {
           if (purchase.transactionId) {
-            await finishTransaction({ purchase, isConsumable: purchase.productId !== 'no-ads' });
+            await finishTransaction({ purchase, isConsumable: purchase.productId !== 'no_ads' });
             onPurchaseSuccess(purchase.productId);
           }
         });
