@@ -32,5 +32,9 @@ export function useNoAds() {
     return false;
   };
 
-  return { noAds, purchaseNoAds, restorePurchases };
+  const setNoAdsAndSave = async (val: boolean) => {
+    await AsyncStorage.setItem(NO_ADS_KEY, val ? 'true' : 'false');
+    setNoAds(val);
+  };
+  return { noAds, purchaseNoAds, restorePurchases, setNoAds: setNoAdsAndSave };
 }

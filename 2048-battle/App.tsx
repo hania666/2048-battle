@@ -22,6 +22,7 @@ import { getEloDiff } from './src/game/elo';
 import { supabase } from './src/utils/supabase';
 import { useEnergy } from './src/hooks/useEnergy';
 import { useNoAds } from './src/hooks/useNoAds';
+import { useIAP } from './src/hooks/useIAP';
 import { useRewardedAd } from './src/hooks/useRewardedAd';
 import { useDailyBonus } from './src/hooks/useDailyBonus';
 import { soundManager } from './src/utils/soundManager';
@@ -57,7 +58,13 @@ export default function App() {
   const { energy, maxEnergy, useEnergy: spendEnergy, addEnergy, getTimeUntilRegen } = useEnergy();
   const { canClaim, streak, nextBonus, claimBonus } = useDailyBonus();
   const { settings } = useSettings();
-  const { noAds, purchaseNoAds } = useNoAds();
+  const { noAds, purchaseNoAds, setNoAds } = useNoAds();
+  const { buyProduct } = useIAP((productId) => {
+    if (productId === 'energy_10') addEnergy(10);
+    else if (productId === 'energy_25') addEnergy(25);
+    else if (productId === 'energy_unlimited') addEnergy(999);
+    else if (productId === 'no_ads') setNoAds(true);
+  });
   const { achievements, checkAchievements, unlockedCount } = useAchievements();
   const { selectedSkin, ownedSkinIds, selectSkin, purchaseSkin, isSkinOwned } = useSkins();
   const { signOut } = useGoogleAuth();
@@ -134,13 +141,9 @@ export default function App() {
           maxEnergy={maxEnergy}
           timeUntilRegen={getTimeUntilRegen()}
           onWatchAd={adLoaded && !noAds ? showAd : undefined}
-          onBuy={(product) => {
-            if (product === 'energy_10') addEnergy(10);
-            else if (product === 'energy_25') addEnergy(25);
-            else if (product === 'energy_unlimited') addEnergy(999);
-          }}
+          onBuy={(product) => buyProduct(product)}
           noAds={noAds}
-          onRemoveAds={purchaseNoAds}
+          onRemoveAds={() => buyProduct('no_ads')}
           adLoaded={adLoaded}
           onSettings={() => setScreen('settings')}
           onProfile={() => setScreen('profile')}
